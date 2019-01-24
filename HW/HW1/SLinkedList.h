@@ -6,16 +6,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 //#include "utils.h"
 
 #define TRUE 1
 #define FALSE 0
+#define MAX_STRING_SIZE 256
 
 typedef struct node {
     /*
     * Node for single linked list structure
     */
-    char data[256]; //data contained in node
+    char data[MAX_STRING_SIZE]; //data contained in node
     //char* data;
     struct node* next; //pointer to next node
 
@@ -43,7 +45,8 @@ void popback(SLList* List);  //delete node at the front of the list
 void printlist(SLList* List); //print all elements in the list
 char* getAt(SLList* List, const int index); //get the data at index 
 char* front(SLList* List);
-
+char* itoa(int num, char* str, int base); //converts from integer to string
+void reverse(char str[], int length); //utility function for itoa
 
 char* front(SLList* List) {
     /*
@@ -209,5 +212,59 @@ void popback(SLList* List) {
     suppress(List, List->size - 1);
 }  
 
+char* itoa(int num, char* str, int base) { 
+    //IMPLEMENTATION FROM GEEKSFORGEEKS
+    int i = 0; 
+    bool isNegative = false; 
+  
+    /* Handle 0 explicitely, otherwise empty string is printed for 0 */
+    if (num == 0) 
+    { 
+        str[i++] = '0'; 
+        str[i] = '\0'; 
+        return str; 
+    } 
+  
+    // In standard itoa(), negative numbers are handled only with  
+    // base 10. Otherwise numbers are considered unsigned. 
+    if (num < 0 && base == 10) 
+    { 
+        isNegative = true; 
+        num = -num; 
+    } 
+  
+    // Process individual digits 
+    while (num != 0) 
+    { 
+        int rem = num % base; 
+        str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0'; 
+        num = num/base; 
+    } 
+  
+    // If number is negative, append '-' 
+    if (isNegative) 
+        str[i++] = '-'; 
+  
+    str[i] = '\0'; // Append string terminator 
+  
+    // Reverse the string 
+    reverse(str, i); 
+  
+    return str; 
+} 
+
+void reverse(char str[], int length) { 
+    //IMPLEMENTATION OF ITOA FROM GEEKSFORGEEKS
+    int start = 0; 
+    int end = length -1; 
+    while (start < end) 
+    { 
+        char tmp = *(str+start);
+        *(str+start) = *(str+end);
+        *(str+end) = tmp;
+        start++; 
+        end--; 
+    } 
+} 
 
 #endif

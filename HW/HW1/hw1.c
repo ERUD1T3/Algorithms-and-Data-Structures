@@ -32,8 +32,9 @@ int main(int argc, char* argv[])
   //printf("\nstarting to read input\n");
 
   FILE* fp = fopen(infile, "r");
+  FILE* fp_next = fopen(infile, "r");
 
-  if(fp == NULL) {
+  if(fp == NULL || fp_next == NULL) {
       printf("\nError: failed to open file.\n");
       exit(EXIT_FAILURE);
   }
@@ -41,40 +42,49 @@ int main(int argc, char* argv[])
   //printf("\ninitializing the program\n");
 
   char* input_line = NULL; //input line from file
+  char* next_line = NULL; //input to the next line in file 
   //char* next_line = NULL;
-  size_t len = 0;
-  SLList* cmd_line; //list of commands from lines
-  SLList* next_line;
+  size_t len = 0, next_len = 0;
+  SLList* curr_cmd; //list of commands from lines
+  SLList* next_cmd;
   SLList* avail_workers = (SLList*)malloc(sizeof(SLList));
-  SLList* customers = (SLList*)malloc(sizeof(SLList));
+  SLList* customer_orders = (SLList*)malloc(sizeof(SLList));
   SLList* assignments = (SLList*)malloc(sizeof(SLList));
   Order* prev_order = NULL;
 
   init(avail_workers);
-  init(customers);
+  init(customer_orders);
   init(assignments);
 
   //setting all workers to available at the start of the program
   for(uint i = 0; i < MAX_WORKERS; ++i) pushback(avail_workers, workers[i]); 
-  
+
+  getline(&next_line, &next_len, fp_next); //setting up the look ahead on the following night
   //getline(&input_line, &len, fp) != EOF
+
+
+
   while(getline(&input_line, &len, fp) != EOF) {
+
+
+    getline(&next_line, &next_len, fp_next);
     printf("%s", input_line);
-    cmd_line = parseWords(input_line);
+    //printf("next: %s", next_line);
+
+    curr_cmd = parseWords(input_line);
+    next_cmd = parseWords(next_line);
+    
     //printf("printing the list of commands\n");
-    /*
-    printlist(cmds);
-    printf("cmd first word: %s\n", getAt(cmds, 0));
-    */
-    parseCmd(cmd_line, avail_workers, customers, assignments, &prev_order);
-    //parseCmd(cmd_line, avail_workers, customers, assignments, next_line);
-    //cmd_line = next_line;
+   
+    //parseCmd(cmd_line, avail_workers, customer_orders, assignments, &prev_order); //attempt at implementation based on previous
+    parseCmd(curr_cmd, avail_workers, customer_orders, assignments, next_cmd, &prev_order);  //implementation based on looking at next commands
+
   }
 
   printf("\n");
   free(avail_workers);
   free(assignments);
-  free(customers);
+  free(customer_orders);
   fclose(fp);
   return EXIT_SUCCESS;
 }
