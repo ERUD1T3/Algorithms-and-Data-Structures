@@ -25,8 +25,8 @@ typedef struct {
     char customer[256];
     uint order_time;
     uint n_books;
-    uint n_eletronics;
-    uint end_time;
+    uint n_electronics;
+    int end_time;
     //Bundle order_bundle;
 } Order;
 
@@ -46,6 +46,7 @@ void printAvailWorker(uint time, SLList* avail_workers); //print a list of the c
 void printWorkerAssign(uint time, SLList* assignments); //print a list of workers with their assigned customer
 void printMaxFulfilTime(uint time); //print the time it would take for all orders to be processed
 void checkOrderCompletion(uint time); //print the list of all orderes complete int the given time
+uint computeEndTime(Order* order); //compute the end time of an order
 void parseCmd(
     SLList* cmd_line, 
     SLList* avail_workers, 
@@ -57,9 +58,10 @@ Order* customerOrder(
     uint start_time, 
     char* cost_name, 
     SLList* avail_worker, 
-    uint n_tronics,
     uint n_books,
-    Order** prev_order
+    uint n_tronics,
+    Order** prev_order,
+    SLList* assignments
     ); //function to handle the costumer order
 void initOrder(
     Order* order,
@@ -68,19 +70,19 @@ void initOrder(
     uint order_time,
     uint n_books,
     uint n_electronics,
-    uint end_time 
+    int end_time 
     ); //initializes an order with the inputted parameters
 
 /********************************************
 * IMPLEMENTATION OF THE FUNCTIONS IN UTILS_H
 *********************************************/
 
-void initOrder(Order* order, char* customer, char* worker, uint order_time, uint n_books, uint n_electronics, uint end_time) {
+void initOrder(Order* order, char* customer, char* worker, uint order_time, uint n_books, uint n_electronics, int end_time) {
         strcpy(order->worker, worker);
         strcpy(order->customer, customer);
         order->order_time = order_time;
         order->n_books = n_books;
-        order->n_eletronics = n_electronics;
+        order->n_electronics = n_electronics;
         order->end_time = end_time;
 }
 
@@ -118,15 +120,17 @@ void parseCmd(SLList* cmd, SLList* avail_workers, SLList* customers, SLList* ass
             avail_workers, 
             atoi(getAt(cmd, 3)), 
             atoi(getAt(cmd, 4)),
-            prev_order
+            prev_order, 
+            assignments
             );
         
         //adding a new assignment to the assignment list
-        strcpy(tmp, (*prev_order)->worker); 
-        strcat(tmp, ":");
-        strcat(tmp, (*prev_order)->customer);
-        pushback(assignments, tmp);
-        
+        if((*prev_order)->end_time != -1) {
+            strcpy(tmp, (*prev_order)->worker); 
+            strcat(tmp, ":");
+            strcat(tmp, (*prev_order)->customer);
+            pushback(assignments, tmp);
+        }  
     } 
 
     //case printAvailWorker
@@ -151,7 +155,13 @@ void parseCmd(SLList* cmd, SLList* avail_workers, SLList* customers, SLList* ass
 }
 
 /****************UNDER CONSTRUCTION**********************************************/
-Order* customerOrder(uint start_time, char* cost_name, SLList* avail_workers, uint n_tronics, uint n_books, Order** prev_order) {
+Order* customerOrder(uint start_time, 
+                    char* cost_name, 
+                    SLList* avail_workers, 
+                    uint n_books, 
+                    uint n_tronics, 
+                    Order** prev_order,
+                    SLList* assignments) {
     
     //invalid order 
     if((n_books <= 0  && n_tronics <= 0) || (n_books + n_tronics) > 10) {
@@ -161,69 +171,81 @@ Order* customerOrder(uint start_time, char* cost_name, SLList* avail_workers, ui
     
     Order* curr_order; //creating order structure
 
+    
     if(n_books != 0 && n_tronics != 0) {
-        printf("starting no bundle\n");
         curr_order = (Order*)malloc(sizeof(Order));
         initOrder(curr_order, cost_name, front(avail_workers), start_time, n_books, n_tronics, 0);
         printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
         popfront(avail_workers);
-        printf("ending no bundle\n");
         return curr_order;
     }
-
-    printf("about to enter bundles\n");
-    if(prev_order == NULL) printf("prev_order was NULL!!!\n");
-    printf("previous order: %s %d %d", (*prev_order)->customer, (*prev_order)->n_books, (*prev_order)->n_eletronics);
     
-
+    
+    //printf("previous book: %d and eletronics: %d\n", (*prev_order)->n_books, (*prev_order)->n_electronics);
     //Electronics bundle
-    if( (n_books == 0) &&
-        (prev_order != NULL) &&
-        ((*prev_order)->n_books == 0) && 
-        (((*prev_order)->n_eletronics + n_tronics) <= 10)) {
-            printf("start case e-bundle\n");
+    if(n_books == 0) {
+        if( prev_order != NULL && 
+            (*prev_order)->n_books == 0 && 
+            ((*prev_order)->n_electronics + n_tronics) <= 10) {
             //concatenate cost_name for bundles
             //order->order_bundle
             curr_order = *prev_order;
-            curr_order->n_eletronics += n_tronics;
-            strcat(curr_order->customer, ",");
+            curr_order->n_electronics += n_tronics;
+            strcat(curr_order->customer, " ");
             strcat(curr_order->customer, cost_name);
+            curr_order->end_time = -1;
             //not sure if start time changes
             //not sure if end time should change
             //return curr_order;
-            printf("end case e-bundle\n"); 
+        } 
+        else {
+            curr_order = (Order*)malloc(sizeof(Order));
+            initOrder(curr_order, cost_name, front(avail_workers), start_time, n_books, n_tronics, 0);
+            //printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
+            //printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
+            popfront(avail_workers); 
+        }
     } 
 
     //Book bundle
-    else if((n_tronics == 0) &&
-            (prev_order != NULL) &&
-            ((*prev_order)->n_eletronics == 0) && 
-            (((*prev_order)->n_books + n_books) <= 10)) {
-                printf("start case e-bundle\n");
-                //concatenate cost_name for bundles
-                //order->order_bundle
-                curr_order = *prev_order;
-                curr_order->n_books += n_books;
-                strcat(curr_order->customer, " ");
-                strcat(curr_order->customer, cost_name);
-                //not sure if start time changes
-                //not sure if end time should change
-                //return curr_order;
-                printf("end case e-bundle\n"); 
+    else if(n_tronics == 0) {
+        if( prev_order != NULL &&
+            (*prev_order)->n_electronics == 0 && 
+            ((*prev_order)->n_books + n_books) <= 10) {
+            //concatenate cost_name for bundles
+            //order->order_bundle
+            curr_order = *prev_order;
+            curr_order->n_books += n_books;
+            strcat(curr_order->customer, " ");
+            strcat(curr_order->customer, cost_name);
+            curr_order->end_time = -1;
+            //not sure if start time changes
+            //not sure if end time should change
+            //return curr_order;
+        }
+        else {
+            curr_order = (Order*)malloc(sizeof(Order));
+            initOrder(curr_order, cost_name, front(avail_workers), start_time, n_books, n_tronics, 0);
+            //printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
+            //printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
+            popfront(avail_workers); 
+        }
     } 
     
     //case order is not bundled
     else {
         //stop the bundle
+        printf("ORDER IS NOT BUNDLED\n");
         curr_order = (Order*)malloc(sizeof(Order));
-        initOrder(curr_order, cost_name, front(avail_workers), start_time, n_books, n_tronics, 0);
-        printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
+        initOrder(curr_order, cost_name, front(avail_workers), start_time, n_books, n_tronics, computeEndTime(curr_order));
+        //printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
         printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
         popfront(avail_workers); 
     }
     
 
     return curr_order;
+    
 }
 
 void printAvailWorker(uint time, SLList* avail_workers) {
@@ -248,6 +270,19 @@ void printMaxFulfilTime(uint time) {
     /*
     *print the time it would take for all orders to be processed
     */
+}
+
+/**************************************
+ * STILL BRAINSTORMING
+ **************************************/ 
+uint computeEndTime(Order* order) {
+    /*
+    * Computes the end time of the order completion
+    */
+    return order->n_electronics + 
+            TRAVEL_T * ((order->n_electronics == 0)?1:0) +
+            order->n_books + 
+            TRAVEL_T * ((order->n_books == 0)?1:0);
 }
 
 void checkOrderCompletion(uint time) {
