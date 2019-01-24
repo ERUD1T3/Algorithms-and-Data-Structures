@@ -72,6 +72,10 @@ void printlist(SLList* List) {
     /*
     * print all elements in the list
     */
+   if(List == NULL || List->size == 0 ) {
+       printf("empty list\n");
+       return;
+   }
    printf("[");
    Node* tmp = List->head;
 

@@ -18,29 +18,30 @@
 #define MAX_CAT 2 //total number of categories
 #define MAX_CMD 4 //total number of commands to handle
  
-typedef unsigned int  uint;
+//typedef unsigned int  int;
 
 typedef struct {
     char worker[256];
     char customer[256];
-    uint order_time;
-    uint n_books;
-    uint n_electronics;
-    int end_time;
+    int order_time;
+    int n_books;
+    int n_electronics;
+    int fulfil_time;
     //Bundle order_bundle;
 } Order;
 
 const char* workers[MAX_WORKERS] = { "Alice", "Bob", "Carol", "David", "Emily" };
 //const char* categories[MAX_CAT] = { "Electronics", "Books" };
 
+void printOrder(Order* order); //print an order
 char* order2string(Order* order); //convert order into list for inserting in list
 Order* string2order(char* str); //convert a string back to an order
 SLList* parseWords(char* line); //obtain words from input lines and insert them into a list
-void printAvailWorker(uint time, SLList* avail_workers); //print a list of the currently available workers
-void printWorkerAssign(uint time, SLList* assignments); //print a list of workers with their assigned customer
-void printMaxFulfilTime(uint curr_time, Order* list[], uint size); //print the time it would take for all orders to be processed
-void checkOrderCompletion(uint time, SLList* customer_orders); //print the list of all orderes complete int the given time
-uint EstimatedTime(Order* order); //compute the end time of an order
+void printAvailWorker(int time, SLList* avail_workers); //print a list of the currently available workers
+void printWorkerAssign(int time, SLList* assignments); //print a list of workers with their assigned customer
+void printMaxFulfilTime(int curr_time, SLList* order_list); //print the time it would take for all orders to be processed
+void checkOrderCompletion(int time, SLList* customer_orders); //print the list of all orderes complete int the given time
+int EstimatedTime(int n_books, int n_electronics); //compute the end time of an order
 void parseCmd(
     SLList* cmd_line, 
     SLList* avail_workers, 
@@ -50,11 +51,11 @@ void parseCmd(
     Order** prev_order
     );  //assign relevant words to a function
 Order* customerOrder(
-    uint start_time, 
+    int start_time, 
     char* cost_name, 
     SLList* avail_worker, 
-    uint n_books,
-    uint n_tronics,
+    int n_books,
+    int n_tronics,
     Order** prev_order,
     SLList* next_cmd
     ); //function to handle the costumer order
@@ -62,23 +63,23 @@ void initOrder(
     Order* order,
     char* customer,
     char* worker,
-    uint order_time,
-    uint n_books,
-    uint n_electronics,
-    int end_time 
+    int order_time,
+    int n_books,
+    int n_electronics,
+    int fulfil_time 
     ); //initializes an order with the inputted parameters
 
 /********************************************
 * IMPLEMENTATION OF THE FUNCTIONS IN UTILS_H
 *********************************************/
 
-void initOrder(Order* order, char* worker, char* customer, uint order_time, uint n_books, uint n_electronics, int end_time) {
+void initOrder(Order* order, char* worker, char* customer, int order_time, int n_books, int n_electronics, int fulfil_time) {
         strcpy(order->worker, worker);
         strcpy(order->customer, customer);
         order->order_time = order_time;
         order->n_books = n_books;
         order->n_electronics = n_electronics;
-        order->end_time = end_time;
+        order->fulfil_time = fulfil_time;
 }
 
 SLList* parseWords(char* line) {
@@ -125,14 +126,14 @@ void parseCmd(SLList* cmd,
             prev_order, 
             next_cmd
             );
-        
         //adding a new assignment to the assignment list
-        if((*prev_order)->end_time != -1) {
+        if((*prev_order)->fulfil_time != -1) {
             strcpy(tmp, (*prev_order)->worker); 
             strcat(tmp, ":");
             strcat(tmp, (*prev_order)->customer);
             pushback(assignments, tmp);
         }  
+        pushback(customer_orders, order2string(*prev_order));
     } 
 
     //case printAvailWorker
@@ -147,8 +148,11 @@ void parseCmd(SLList* cmd,
 
     //case PrintMaxFulfillmentTime
     else if(!strcmp(getAt(cmd, 0), "PrintMaxFulfillmentTime")) {
-        Order* bundle[8];
-        //printMaxFulfilTime(atoi(getAt(cmd, 1)), bundle, 8);
+        //Order* bundle[8];
+        //printf("******************************\n");
+        //printlist(customer_orders);
+        //printf("******************************\n");
+        printMaxFulfilTime(atoi(getAt(cmd, 1)), customer_orders);
     } 
     //case of invalid command in the program
     else {
@@ -158,11 +162,11 @@ void parseCmd(SLList* cmd,
 }
 
 /****************UNDER CONSTRUCTION**********************************************/
-Order* customerOrder(uint start_time, 
+Order* customerOrder(int start_time, 
                     char* cost_name, 
                     SLList* avail_workers, 
-                    uint n_books, 
-                    uint n_tronics, 
+                    int n_books, 
+                    int n_tronics, 
                     Order** prev_order,
                     SLList* next_cmd) {
     
@@ -172,35 +176,16 @@ Order* customerOrder(uint start_time,
         return NULL;
     }
     
+    if(avail_workers->size == 0) {
+        printf("No more workers available\n");
+        return NULL;
+    }
+    
     Order* curr_order; //creating order structure
     bool isNewOrderToProcess = true;
 
     //case: Electronics bundle
     if(n_books == 0) {
-        //if(strcmp(getAt(next_cmd, 0), "CustomerOrder") || atoi(getAt(next_cmd, 3)) == 0) {
-        /*
-        if( prev_order != NULL && 
-            (*prev_order)->n_books == 0 && 
-            ((*prev_order)->n_electronics + n_tronics) <= 10) {
-            //concatenate cost_name for bundles
-            //order->order_bundle
-            curr_order = *prev_order;
-            curr_order->n_electronics += n_tronics;
-            strcat(curr_order->customer, " ");
-            strcat(curr_order->customer, cost_name);
-            curr_order->end_time = -1;
-            //not sure if start time changes
-            //not sure if end time should change
-            //return curr_order;
-        } 
-        else {
-            curr_order = (Order*)malloc(sizeof(Order));
-            initOrder(curr_order, front(avail_workers), cost_name, start_time, n_books, n_tronics, -1);
-            //printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
-            //printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
-            popfront(avail_workers); 
-        }
-        */
        
         if(prev_order == NULL) {
             isNewOrderToProcess = true;
@@ -217,7 +202,7 @@ Order* customerOrder(uint start_time,
             strcat(curr_order->customer, " ");
             strcat(curr_order->customer, cost_name);
             curr_order->order_time = start_time;
-            curr_order->end_time = -1;
+            curr_order->fulfil_time = -1;
             isNewOrderToProcess = false;
         }
         
@@ -225,29 +210,6 @@ Order* customerOrder(uint start_time,
 
     //case: Book bundle
     else if(n_tronics == 0) {
-        /*
-        if( prev_order != NULL &&
-            (*prev_order)->n_electronics == 0 && 
-            ((*prev_order)->n_books + n_books) <= 10) {
-            //concatenate cost_name for bundles
-            //order->order_bundle
-            curr_order = *prev_order;
-            curr_order->n_books += n_books;
-            strcat(curr_order->customer, " ");
-            strcat(curr_order->customer, cost_name);
-            curr_order->end_time = -1;
-            //not sure if start time changes
-            //not sure if end time should change
-            //return curr_order;
-        }
-        else {
-            curr_order = (Order*)malloc(sizeof(Order));
-            initOrder(curr_order, front(avail_workers), cost_name, start_time, n_books, n_tronics, -1);
-            //printf("WorkerAssignment %d %s %s\n", (*prev_order)->order_time, (*prev_order)->worker, (*prev_order)->customer);
-            //printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
-            popfront(avail_workers); 
-        }
-        */
        
         if(prev_order == NULL) {
             isNewOrderToProcess = true;
@@ -264,7 +226,7 @@ Order* customerOrder(uint start_time,
             strcat(curr_order->customer, " ");
             strcat(curr_order->customer, cost_name);
             curr_order->order_time = start_time;
-            curr_order->end_time = -1;
+            curr_order->fulfil_time = -1;
             isNewOrderToProcess = false;
         }
         
@@ -283,7 +245,7 @@ Order* customerOrder(uint start_time,
             start_time, 
             n_books, 
             n_tronics, 
-            start_time + EstimatedTime(curr_order));
+            EstimatedTime(n_books, n_tronics));
         printf("WorkerAssignment %d %s %s\n", curr_order->order_time, curr_order->worker, curr_order->customer);
         popfront(avail_workers);    
     }
@@ -292,16 +254,16 @@ Order* customerOrder(uint start_time,
       
 }
 
-void printAvailWorker(uint time, SLList* avail_workers) {
+void printAvailWorker(int time, SLList* avail_workers) {
     /*
     * print a list of the currently available workers
-    * check for every order for whether the completion time > order->end_time;
+    * check for every order for whether the completion time > order->fulfil_time;
     */
     printf("AvailableWorkerList ");
     printlist(avail_workers);
 } 
 
-void printWorkerAssign(uint time, SLList* assignments) {
+void printWorkerAssign(int time, SLList* assignments) {
     /*
      * print a list of workers with their assigned customer
      * 
@@ -310,33 +272,41 @@ void printWorkerAssign(uint time, SLList* assignments) {
     printlist(assignments);
 }
 
-void printMaxFulfilTime(uint curr_time, Order* list[], uint size) {
+void printMaxFulfilTime(int curr_time, SLList* order_list) {
     /*
     *print the time it would take for all orders to be processed
     */
-   uint latest = list[0]->end_time;
-
-   for(uint i = 0; i < size; ++i) 
-       if(list[i]->end_time > latest) 
-           latest = list[i]->end_time;
-    
-   printf("MaxFulfillmentTime %d", latest - curr_time);
+   int latest = string2order(getAt(order_list, 0))->fulfil_time;
+    //printf("latest: %d\n", latest);
+   for(int i = 1; i < order_list->size; ++i) {
+       int current = string2order(getAt(order_list, i))->fulfil_time;
+       //printf("size: %d, i: %d\n", order_list->size, i);
+       if(current > latest) {
+           latest = current;
+       }
+   }
+   printf("\nMaxFulfillmentTime %d", latest);
 }
 
-uint EstimatedTime(Order* order) {
+int EstimatedTime(int n_books, int n_electronics) {
     /*
     * Computes the end time of the order completion
     */
-    return order->n_electronics + 
-            TRAVEL_T * ((order->n_electronics == 0)?1:0) +
-            order->n_books + 
-            TRAVEL_T * ((order->n_books == 0)?1:0);
+    int ETA = 0;
+    if(n_electronics != 0) {
+        ETA += (TRAVEL_T + PICK_T*(n_electronics));
+    }
+
+    if(n_books != 0) {
+        ETA += (TRAVEL_T + PICK_T*(n_books));
+    }
+    return  ETA;
 }
 
 char* order2string(Order* order) {
     char* order_str = (char*)malloc(MAX_STRING_SIZE*sizeof(char));
     char buffer[8];
-    strcpy(order_str, "");
+    strcpy(order_str, "\0");
     strcat(order_str, order->worker);
     strcat(order_str, " ");
     strcat(order_str, order->customer);
@@ -344,16 +314,16 @@ char* order2string(Order* order) {
     itoa(order->order_time, buffer, 10);
     strcat(order_str, buffer);
     strcat(order_str, " ");
-    strcpy(buffer, "");
+    strcpy(buffer, "\0");
     itoa(order->n_books, buffer, 10);
     strcat(order_str, buffer);
     strcat(order_str, " ");
-    strcpy(buffer, "");
+    strcpy(buffer, "\0");
     itoa(order->n_electronics, buffer, 10);
     strcat(order_str, buffer);
     strcat(order_str, " ");
-    strcpy(buffer, "");
-    itoa(order->end_time, buffer, 10);
+    strcpy(buffer, "\0");
+    itoa(order->fulfil_time, buffer, 10);
     strcat(order_str, buffer);
     strcat(order_str, " ");
     //strcpy(buffer, "");
@@ -365,6 +335,9 @@ Order* string2order(char* str) {
     Order* order = (Order*)malloc(sizeof(Order));
     SLList* tmp = parseWords(str);
     
+    //printf("\ntmp: ");
+    //printlist(tmp);
+    //printf("\n");
 
     initOrder(order, 
         getAt(tmp, 0), 
@@ -374,25 +347,33 @@ Order* string2order(char* str) {
         atoi(getAt(tmp, 4)),
         atoi(getAt(tmp, 5))
         );
+
+    //printf("************************\n");
+    //printOrder(order);
+    //printf("************************\n");
     return order;
 }
 
 /**************************************
  * STILL BRAINSTORMING
  **************************************/ 
-void checkOrderCompletion(uint curr_time, SLList* customer_orders) {
+void checkOrderCompletion(int curr_time, SLList* customer_orders) {
     /*
     * Pints a list of completed orders
     */
    /*
-   uint bundle_size = 0;
+   int bundle_size = 0;
    //if(curr_time == ) 
-   for(uint i = 0; i < bundle_size; ++i) {
-    printf("OrderCompletion %d %s", bundle[i]->end_time, bundle[i]->customer);
+   for(int i = 0; i < bundle_size; ++i) {
+    printf("OrderCompletion %d %s", bundle[i]->fulfil_time, bundle[i]->customer);
    }
    */
 }
 
+void printOrder(Order* order) {
+    printf("worker: %s customer: %s start_time: %d book: %d  Electronics: %d  fulfil_time: %d", 
+    order->worker, order->customer, order->order_time, order->n_books, order->n_electronics, order->fulfil_time);
+}
 
 
 #endif

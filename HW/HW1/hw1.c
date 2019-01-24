@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 
   char* infile = argv[1]; //taking file name in as second argument
   //char* outfile = (strcmp(argv[2], ""))?argv[2]:"input.txt";
-
+  //char*  infile = "input.txt";
   //printf("\nstarting to read input\n");
 
   FILE* fp = fopen(infile, "r");
