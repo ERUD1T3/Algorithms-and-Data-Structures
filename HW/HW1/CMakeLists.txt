@@ -3,12 +3,11 @@ project(HW1)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(.)
+include_directories(HW1
+        utils.h
+        SLinkedList.h
+        )
 
 add_executable(HW1
         hw1.c
-        input.txt
-        output.txt
-        SLinkedList.h
-        tmp.txt
-        utils.h)
+        )

@@ -6,5 +6,5 @@ C_FLAGS = -g
 
 C_DEFINES = 
 
-C_INCLUDES = -I/home/th3rudite/Desktop/AlgDS/HW/HW1/. 
+C_INCLUDES = -I/home/th3rudite/Desktop/AlgDS/HW/HW1/HW1 -I/home/th3rudite/Desktop/AlgDS/HW/HW1/utils.h -I/home/th3rudite/Desktop/AlgDS/HW/HW1/SLinkedList.h 
 

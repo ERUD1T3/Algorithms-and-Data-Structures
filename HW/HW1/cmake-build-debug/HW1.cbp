@@ -34,7 +34,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/."/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/HW1"/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/utils.h"/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/SLinkedList.h"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -58,7 +60,9 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/."/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/HW1"/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/utils.h"/>
+					<Add directory="/home/th3rudite/Desktop/AlgDS/HW/HW1/SLinkedList.h"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -86,22 +90,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/SLinkedList.h">
-			<Option target="HW1"/>
-		</Unit>
 		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/hw1.c">
-			<Option target="HW1"/>
-		</Unit>
-		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/input.txt">
-			<Option target="HW1"/>
-		</Unit>
-		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/output.txt">
-			<Option target="HW1"/>
-		</Unit>
-		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/tmp.txt">
-			<Option target="HW1"/>
-		</Unit>
-		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/utils.h">
 			<Option target="HW1"/>
 		</Unit>
 		<Unit filename="/home/th3rudite/Desktop/AlgDS/HW/HW1/CMakeLists.txt">

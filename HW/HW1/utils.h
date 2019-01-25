@@ -21,8 +21,8 @@
 //typedef unsigned int  int;
 
 typedef struct {
-    char worker[256];
-    char customer[256];
+    char worker[32];
+    char customer[32];
     int order_time;
     int n_books;
     int n_electronics;
@@ -34,13 +34,13 @@ const char* workers[MAX_WORKERS] = { "Alice", "Bob", "Carol", "David", "Emily" }
 //const char* categories[MAX_CAT] = { "Electronics", "Books" };
 
 void printOrder(Order* order); //print an order
-char* order2string(Order* order); //convert order into list for inserting in list
+void order2string(Order* order, char* str); //convert order into list for inserting in list
 Order* string2order(char* str); //convert a string back to an order
 SLList* parseWords(char* line); //obtain words from input lines and insert them into a list
 void printAvailWorker(int time, SLList* avail_workers); //print a list of the currently available workers
 void printWorkerAssign(int time, SLList* assignments); //print a list of workers with their assigned customer
 void printMaxFulfilTime(int curr_time, SLList* order_list); //print the time it would take for all orders to be processed
-void checkOrderCompletion(int time, SLList* customer_orders); //print the list of all orderes complete int the given time
+void checkOrderCompletion(int time, SLList* customer_orders, SLList* avail_workers); //print the list of all orderes complete int the given time
 int EstimatedTime(int n_books, int n_electronics); //compute the end time of an order
 void parseCmd(
     SLList* cmd_line, 
@@ -87,6 +87,8 @@ SLList* parseWords(char* line) {
     * Parses the input line for relevant commands
     */ 
     SLList* tmp = (SLList*)malloc(sizeof(SLList)); //command created with be used by then freed by parseCmd()
+    init(tmp);
+
     char* word_token;
     char* delim = " \n";
 
@@ -111,9 +113,10 @@ void parseCmd(SLList* cmd,
         Order** prev_order) {
 
     //case costumerOrder
-    char* tmp = (char*)malloc(1024*sizeof(char));
-    
-    checkOrderCompletion(atoi(getAt(cmd, 1)), customer_orders);
+    char tmp[256] = "\0";
+    char tmp2[256] = "\0";
+
+    //checkOrderCompletion(atoi(getAt(cmd, 1)), customer_orders, avail_workers);
 
     if(!strcmp(getAt(cmd, 0), "CustomerOrder")) {
         
@@ -127,13 +130,19 @@ void parseCmd(SLList* cmd,
             next_cmd
             );
         //adding a new assignment to the assignment list
+        
+        order2string(*prev_order, tmp2);
+        //printf("\nculprit: %s size: %d\n", tmp2, (int)strlen(tmp2));
+        pushback(customer_orders, tmp2);
+        //printlist(customer_orders);
+        
+
         if((*prev_order)->fulfil_time != -1) {
             strcpy(tmp, (*prev_order)->worker); 
             strcat(tmp, ":");
             strcat(tmp, (*prev_order)->customer);
             pushback(assignments, tmp);
-        }  
-        pushback(customer_orders, order2string(*prev_order));
+        }          
     } 
 
     //case printAvailWorker
@@ -148,20 +157,19 @@ void parseCmd(SLList* cmd,
 
     //case PrintMaxFulfillmentTime
     else if(!strcmp(getAt(cmd, 0), "PrintMaxFulfillmentTime")) {
-        //Order* bundle[8];
-        //printf("******************************\n");
-        //printlist(customer_orders);
-        //printf("******************************\n");
         printMaxFulfilTime(atoi(getAt(cmd, 1)), customer_orders);
     } 
     //case of invalid command in the program
     else {
         printf("Invalid Command\n");
     }
+    
     free(cmd);
 }
 
-/****************UNDER CONSTRUCTION**********************************************/
+/**********************************************
+ * UNDER CONSTRUCTION
+ **********************************************/
 Order* customerOrder(int start_time, 
                     char* cost_name, 
                     SLList* avail_workers, 
@@ -303,10 +311,10 @@ int EstimatedTime(int n_books, int n_electronics) {
     return  ETA;
 }
 
-char* order2string(Order* order) {
-    char* order_str = (char*)malloc(MAX_STRING_SIZE*sizeof(char));
-    char buffer[8];
-    strcpy(order_str, "\0");
+void order2string(Order* order, char* order_str) {
+    //char* order_str = (char*)malloc(MAX_STRING_SIZE*sizeof(char));
+    char buffer[10];
+    //strcpy(order_str, "\0");
     strcat(order_str, order->worker);
     strcat(order_str, " ");
     strcat(order_str, order->customer);
@@ -328,7 +336,7 @@ char* order2string(Order* order) {
     strcat(order_str, " ");
     //strcpy(buffer, "");
 
-    return order_str;
+    //return order_str;
 }
 
 Order* string2order(char* str) {
@@ -355,19 +363,27 @@ Order* string2order(char* str) {
 }
 
 /**************************************
- * STILL BRAINSTORMING
+ * UNDER CONSTRUCTION
  **************************************/ 
-void checkOrderCompletion(int curr_time, SLList* customer_orders) {
+void checkOrderCompletion(int curr_time, SLList* customer_orders, SLList* avail_workers) {
     /*
     * Pints a list of completed orders
     */
-   /*
-   int bundle_size = 0;
-   //if(curr_time == ) 
-   for(int i = 0; i < bundle_size; ++i) {
-    printf("OrderCompletion %d %s", bundle[i]->fulfil_time, bundle[i]->customer);
-   }
-   */
+
+    if(customer_orders->size == 0) return;
+
+    for(int i = 0; i < customer_orders->size; ++i) {
+        char* tmp = getAt(customer_orders, i);
+        
+        Order* order = string2order(tmp);
+        int end_time = order->order_time + order->fulfil_time;
+        if(curr_time >= end_time) {
+            printf("OrderCompletion %d %s\n", end_time, order->customer);
+            pushback(avail_workers, order->worker);
+            popfront(customer_orders);
+            free(order);
+        }
+    }
 }
 
 void printOrder(Order* order) {

@@ -27,9 +27,6 @@ int main(int argc, char* argv[])
   */
 
   char* infile = argv[1]; //taking file name in as second argument
-  //char* outfile = (strcmp(argv[2], ""))?argv[2]:"input.txt";
-  //char*  infile = "input.txt";
-  //printf("\nstarting to read input\n");
 
   FILE* fp = fopen(infile, "r");
   FILE* fp_next = fopen(infile, "r");
@@ -57,7 +54,7 @@ int main(int argc, char* argv[])
   init(assignments);
 
   //setting all workers to available at the start of the program
-  for(uint i = 0; i < MAX_WORKERS; ++i) pushback(avail_workers, workers[i]); 
+  for(int i = 0; i < MAX_WORKERS; ++i) pushback(avail_workers, workers[i]); 
 
   getline(&next_line, &next_len, fp_next); //setting up the look ahead on the following night
   //getline(&input_line, &len, fp) != EOF
@@ -75,7 +72,7 @@ int main(int argc, char* argv[])
     next_cmd = parseWords(next_line);
     
     //printf("printing the list of commands\n");
-   
+    //printlist(customer_orders);
     //parseCmd(cmd_line, avail_workers, customer_orders, assignments, &prev_order); //attempt at implementation based on previous
     parseCmd(curr_cmd, avail_workers, customer_orders, assignments, next_cmd, &prev_order);  //implementation based on looking at next commands
 

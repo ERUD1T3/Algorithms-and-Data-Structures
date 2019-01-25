@@ -11,7 +11,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define MAX_STRING_SIZE 256
+#define MAX_STRING_SIZE 64
 
 typedef struct node {
     /*
@@ -155,7 +155,14 @@ void pushback(SLList* List,const char* data) {
     /*
     * insert node at the end of the list
     */
-   if(List->size == 1) { //edge case for single node list
+   if(List->size == 0) {
+        Node* new_node = (Node*)malloc(sizeof(Node));
+        strcpy(new_node->data, data);
+        new_node->next = NULL;
+        List->head = new_node;
+        ++List->size;
+   }
+   else if(List->size == 1) { //edge case for single node list
         Node* new_node = (Node*)malloc(sizeof(Node));
         strcpy(new_node->data, data);
         new_node->next = List->head->next;
