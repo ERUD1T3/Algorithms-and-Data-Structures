@@ -27,19 +27,31 @@ location* initLoc(char* loc_name, uint x, uint y, bool is_visited); //location c
 SLList* parseWords(char* line); //parse the words in line into a list
 int minPathFinder(uint rem_dest, SLList* visited, SLList* unvisited); //recursively find the path from and to start station
 location* getLocation(SLList* cmd); //Creates a location struct from the command
-location* str2loc(char* str);
-char* loc2str(location* loc);
+location* str2loc(char* str); //converts string to location 
+char* loc2str(location* loc); //converst location to string
+double distance(location* loc1, location* loc2); //computes the distance between two locations
+double path_length(location* path[], uint size); //computes the overall path length
 
 
-
-
-
+///UNDER CONSTRUCTION///////////////////////////////////////////////
 int minPathFinder(uint rem_dest, SLList* visited, SLList* unvisited) {
     /*
     * recursively find the path from and to the start station
     */
+   double min_dist = 0;
    for(uint i = 0; i < unvisited->size; ++i) {
-       //popfront(unvisited)
+       location* curr_loc1 = str2loc(popfront(unvisited));
+       location* curr_loc2 = str2loc(popfront(unvisited));
+       pushback(visited, loc2str(curr_loc1));
+       pushback(visited, loc2str(curr_loc2));
+
+       if(rem_dest == 1) {
+           min_dist = distance(curr_loc1, curr_loc2);
+       } 
+       else {
+           min_dist += minPathFinder(rem_dest - 1, visited, unvisited);
+       }
+
    }
 }
 
@@ -89,12 +101,14 @@ location* getLocation(SLList* cmd) {
         false);
 }
 
-double distance(uint x1, uint x2, uint y1, uint y2) {
+double distance(location* loc1, location* loc2) {
     /*
     * Computes the staightline distance between two set of coordinates
     */
-
-    return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+    return sqrt(
+        pow(((double)loc2->loc_Y - loc1->loc_Y), 2) + 
+        pow(((double)loc2->loc_X - loc1->loc_X), 2)
+        );
 }
 
 
@@ -127,5 +141,14 @@ location* str2loc(char* str) {
         false);
 }
 
-
+double path_length(location* path[], uint size) {
+    /*
+        computes a path length
+    */
+    double total_len = 0;
+    for(uint i = 0, j = 1; j < size; ++i, ++j) {
+        total_len += distance(path[i], path[j]);
+    }
+    return total_len;
+}
 #endif //ROBOT_UTILS

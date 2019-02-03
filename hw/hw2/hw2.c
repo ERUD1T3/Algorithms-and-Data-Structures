@@ -59,18 +59,19 @@ int main(int argc, char** argv)
   }
 
   getline(&input_line, &len, fp);
-  n_dest = atoi(input_line);
+  n_dest = 1 + atoi(input_line); //since robot has to return to starting position
   printf("number of destionation is : %d\n", n_dest);
 
   location* arrloc[n_dest];
 
-  for(uint i = 0; i < n_dest; ++i) {
+  for(uint i = 0; i < n_dest - 1; ++i) {
     getline(&input_line, &len, fp);
     arrloc[i] = getLocation(parseWords(input_line));
   }
+  arrloc[n_dest - 1] = arrloc[0];
 
   for(uint i = 0; i < n_dest; ++i) printf("%s\n", arrloc[i]->loc_name);
-
+  printf("Total path length: %.2lf\n", path_length(arrloc, n_dest));
   /*
     description of each "block" (about 5 lines of instructions)
    */
