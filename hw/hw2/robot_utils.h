@@ -99,7 +99,7 @@ double distance(uint x1, uint x2, uint y1, uint y2) {
 
 
 char* loc2str(location* loc) {
-    char str[MAX_STR_SIZE];
+    char* str = (char*)malloc(MAX_STR_SIZE*sizeof(char));
     char buffer[10];
     
     //strcpy(str, "\0");

@@ -193,7 +193,7 @@ char* suppress(SLList* List,const int index) {
     }
 
     Node* to_del;
-    char tmp[MAX_STR_SIZE];
+    char* tmp = (char*)malloc(MAX_STR_SIZE*sizeof(char));
     
     if(index == 0) { //case 3: deleting head
        to_del = List->head;
