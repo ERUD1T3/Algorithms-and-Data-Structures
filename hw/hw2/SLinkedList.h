@@ -8,15 +8,15 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define TRUE 1
-#define FALSE 0
-#define MAX_STRING_SIZE 64
+#define MAX_STR_SIZE 64
+
+typedef unsigned int uint;
 
 typedef struct node {
     /*
     * Node for single linked list structure
     */
-    char data[MAX_STRING_SIZE]; //data contained in node
+    char data[MAX_STR_SIZE]; //data contained in node
     //char* data;
     struct node* next; //pointer to next node
 
@@ -33,38 +33,38 @@ typedef struct {
 
 
 //Methods to operate on list
-void init(SLList* List); //initialize data member of the list
-Node* traverse(SLList* List,const int index);  //return the pointer to the node previous to the node at index 
+SLList* initList(void); //initialize data member of the list
+void destroy(SLList* List); //destroy a list and free all pointers
+Node* traverse(SLList* List, const uint index);  //return the pointer to the node previous to the node at index 
 void insert(SLList* List,const int index,const char* data); //insert a node with payload data at position index
-void suppress(SLList* List,const int index);  //deletes a node at position index
+char* suppress(SLList* List,const int index);  //deletes a node at position index
 void pushfront(SLList* List,const char* data); //insert node at the front of the list
 void pushback(SLList* List,const char* data); //insert node at the end of the list
-void popfront(SLList* List);  //delete node at the back of the list
-void popback(SLList* List);  //delete node at the front of the list
+char* popfront(SLList* List);  //delete node at the back of the list
+char* popback(SLList* List);  //delete node at the front of the list
 void printlist(SLList* List); //print all elements in the list
 char* getAt(SLList* List, const int index); //get the data at index 
-char* front(SLList* List);
 char* itoa(int num, char* str, int base); //converts from integer to string
 void reverse(char str[], int length); //utility function for itoa
-
-char* front(SLList* List) {
-    /*
-    * Get the data at the head of the list
-    */ 
-    return List->head->data;
-}
 
 
 char* getAt(SLList* List, const int index) {
     return (traverse(List, index)->data);
 }
 
-void init(SLList* List) {
+SLList* initList(void) {
     /*
     *   initialize size to 0 and head to NULL
     */
+   SLList* List = (SLList*)malloc(sizeof(SLList));
    List->size = 0;
    List->head = NULL;
+   return List;
+}
+
+void destroy(SLList* List) {
+    while(List->size != 0) popback(List);
+    free(List);
 }
 
 void printlist(SLList* List) {
@@ -87,7 +87,7 @@ void printlist(SLList* List) {
    printf(" ]\n");
 }
 
-Node* traverse(SLList* List,const int index) {
+Node* traverse(SLList* List, const uint index) {
     /*
     * give an index N, traverse() traverse the list until N and return pointer to N-1
     * O(n)
@@ -174,7 +174,7 @@ void pushback(SLList* List,const char* data) {
 }  
 
 
-void suppress(SLList* List,const int index) {
+char* suppress(SLList* List,const int index) {
     /*
     * suppress() deletes node at index
     * O(n)
@@ -183,16 +183,17 @@ void suppress(SLList* List,const int index) {
     //case 1: empty list
     if(List->size == 0) {
         printf("empty list!\n");
-        return;
+        return NULL;
     }
 
     //case 2: invalid index
     if(index < 0 || index >= List->size) {
         printf("invalid index");
-        return;
+        return NULL;
     }
 
     Node* to_del;
+    char tmp[MAX_STR_SIZE];
     
     if(index == 0) { //case 3: deleting head
        to_del = List->head;
@@ -204,26 +205,27 @@ void suppress(SLList* List,const int index) {
         prev->next = to_del->next;
 
     }
-    
+
+    strcpy(tmp, to_del->data);
     free(to_del);
     --List->size;
+    return tmp;
 }
 
-void popfront(SLList* List) {
+char* popfront(SLList* List) {
     /*
     * delete node at the back of the list
     */
-    suppress(List,0);
+    return suppress(List,0);
 }  
-void popback(SLList* List) {
+char* popback(SLList* List) {
     /*
     * delete node at the front of the list
     */
-    suppress(List, List->size - 1);
+    return suppress(List, List->size - 1);
 }  
 
 char* itoa(int num, char* str, int base) { 
-    //IMPLEMENTATION FROM GEEKSFORGEEKS
     int i = 0; 
     bool isNegative = false; 
   
@@ -264,7 +266,7 @@ char* itoa(int num, char* str, int base) {
 } 
 
 void reverse(char str[], int length) { 
-    //IMPLEMENTATION OF ITOA FROM GEEKSFORGEEKS
+
     int start = 0; 
     int end = length -1; 
     while (start < end) 

@@ -44,6 +44,11 @@ int main(int argc, char** argv)
    */
   FILE* fp = fopen(infile, "r");
 
+  /*
+    store the number destination the map 
+  */
+  uint n_dest = 0;
+
 
   /*
     description of each "block" (about 5 lines of instructions)
@@ -53,11 +58,24 @@ int main(int argc, char** argv)
       exit(EXIT_FAILURE);
   }
 
-  while(getline(&input_line, &len, fp) != EOF) {
+  getline(&input_line, &len, fp);
+  n_dest = atoi(input_line);
+  printf("number of destionation is : %d\n", n_dest);
 
+  location* arrloc[n_dest];
+
+  for(uint i = 0; i < n_dest; ++i) {
+    getline(&input_line, &len, fp);
+    arrloc[i] = getLocation(parseWords(input_line));
   }
+
+  for(uint i = 0; i < n_dest; ++i) printf("%s\n", arrloc[i]->loc_name);
+
   /*
     description of each "block" (about 5 lines of instructions)
    */
+
+
+  fclose(fp);
   return EXIT_SUCCESS;
 }
