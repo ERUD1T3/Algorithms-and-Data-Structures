@@ -25,7 +25,7 @@ typedef struct
 
 location* initLoc(char* loc_name, uint x, uint y, bool is_visited); //location constructor
 SLList* parseWords(char* line); //parse the words in line into a list
-void minPathFinder(double* min_dist, location* path[], uint rem_dest, SLList* visited, SLList* unvisited); //recursively find the path from and to start station
+void minPathFinder(double* min_dist, location* path[], uint size, uint rem_dest, SLList* visited, SLList* unvisited); //recursively find the path from and to start station
 location* getLocation(SLList* cmd); //Creates a location struct from the command
 location* str2loc(char* str); //converts string to location 
 char* loc2str(location* loc); //converst location to string
@@ -34,29 +34,36 @@ double path_length(location* path[], uint size, bool to_print); //computes the o
 
 
 ///UNDER CONSTRUCTION///////////////////////////////////////////////
-void minPathFinder(double* min_dist, location* path[], uint rem_dest, SLList* visited, SLList* unvisited) {
+void minPathFinder(double* min_dist, location* path[], uint size, uint rem_dest, SLList* visited, SLList* unvisited) {
     /*
     * recursively find the path from and to the start station
     */
-   /*
-   double min_dist = 0;
    
    for(uint i = 0; i < unvisited->size; ++i) {
        location* curr_loc1 = str2loc(popfront(unvisited));
-       location* curr_loc2 = str2loc(popfront(unvisited));
        pushback(visited, loc2str(curr_loc1));
-       pushback(visited, loc2str(curr_loc2));
 
-       if(rem_dest == 1) {
-           for
-           min_dist = distance(curr_loc1, curr_loc2);
+       if(rem_dest == 0) {
+           for(uint i = 1; i < size - 1; ++i) {
+               path[i] = str2loc(getAt(visited, i - 1));
+           }
+           double tmp = path_length(path, size, false);
+           if(tmp < *min_dist) {
+               *min_dist = tmp;
+               printf("found a smaller path\n");
+           }
+           else {
+               printf("didn't find a smaller path\n");
+           }
        } 
        else {
-           min_dist += minPathFinder(double* min_dist, rem_dest - 1, visited, unvisited);
+        minPathFinder(min_dist, path, size, rem_dest - 1, visited, unvisited);
        }
+       pushfront(unvisited, loc2str(curr_loc1));
+       popback(visited);
 
    }
-   */
+   
 }
 
 

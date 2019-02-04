@@ -80,7 +80,7 @@ int main(int argc, char** argv)
   SLList* unvisited = initList();
   for(uint i = 1; i < n_dest - 1; ++i) pushback(unvisited, loc2str(arrloc[i]));
   double min_dist = path_length(arrloc, n_dest, false);
-  minPathFinder(&min_dist, arrloc, n_dest - 2, visited, unvisited);
+  minPathFinder(&min_dist, arrloc, n_dest, n_dest - 2, visited, unvisited);
 
   fclose(fp);
   return EXIT_SUCCESS;
