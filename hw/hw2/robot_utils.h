@@ -25,20 +25,22 @@ typedef struct
 
 location* initLoc(char* loc_name, uint x, uint y, bool is_visited); //location constructor
 SLList* parseWords(char* line); //parse the words in line into a list
-int minPathFinder(uint rem_dest, SLList* visited, SLList* unvisited); //recursively find the path from and to start station
+void minPathFinder(double* min_dist, location* path[], uint rem_dest, SLList* visited, SLList* unvisited); //recursively find the path from and to start station
 location* getLocation(SLList* cmd); //Creates a location struct from the command
 location* str2loc(char* str); //converts string to location 
 char* loc2str(location* loc); //converst location to string
 double distance(location* loc1, location* loc2); //computes the distance between two locations
-double path_length(location* path[], uint size); //computes the overall path length
+double path_length(location* path[], uint size, bool to_print); //computes the overall path length
 
 
 ///UNDER CONSTRUCTION///////////////////////////////////////////////
-int minPathFinder(uint rem_dest, SLList* visited, SLList* unvisited) {
+void minPathFinder(double* min_dist, location* path[], uint rem_dest, SLList* visited, SLList* unvisited) {
     /*
     * recursively find the path from and to the start station
     */
+   /*
    double min_dist = 0;
+   
    for(uint i = 0; i < unvisited->size; ++i) {
        location* curr_loc1 = str2loc(popfront(unvisited));
        location* curr_loc2 = str2loc(popfront(unvisited));
@@ -46,13 +48,15 @@ int minPathFinder(uint rem_dest, SLList* visited, SLList* unvisited) {
        pushback(visited, loc2str(curr_loc2));
 
        if(rem_dest == 1) {
+           for
            min_dist = distance(curr_loc1, curr_loc2);
        } 
        else {
-           min_dist += minPathFinder(rem_dest - 1, visited, unvisited);
+           min_dist += minPathFinder(double* min_dist, rem_dest - 1, visited, unvisited);
        }
 
    }
+   */
 }
 
 
@@ -141,14 +145,18 @@ location* str2loc(char* str) {
         false);
 }
 
-double path_length(location* path[], uint size) {
+double path_length(location* path[], uint size, bool to_print) {
     /*
         computes a path length
     */
     double total_len = 0;
+    if(to_print) printf("%s %.2lf\n", loc2str(path[0]), 0.00);
     for(uint i = 0, j = 1; j < size; ++i, ++j) {
-        total_len += distance(path[i], path[j]);
+        double dist = distance(path[i], path[j]);
+        if(to_print) printf("%s %.2lf\n", loc2str(path[j]), dist);
+        total_len += dist;
     }
     return total_len;
 }
+
 #endif //ROBOT_UTILS
