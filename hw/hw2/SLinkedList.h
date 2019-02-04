@@ -34,22 +34,22 @@ typedef struct {
 
 //Methods to operate on list
 SLList* initList(void); //initialize data member of the list
-void destroy(SLList* List); //destroy a list and free all pointers
-Node* traverse(SLList* List, const uint index);  //return the pointer to the node previous to the node at index 
-void insert(SLList* List,const int index,const char* data); //insert a node with payload data at position index
-char* suppress(SLList* List,const int index);  //deletes a node at position index
-void pushfront(SLList* List,const char* data); //insert node at the front of the list
-void pushback(SLList* List,const char* data); //insert node at the end of the list
-char* popfront(SLList* List);  //delete node at the back of the list
-char* popback(SLList* List);  //delete node at the front of the list
-void printlist(SLList* List); //print all elements in the list
-char* getAt(SLList* List, const int index); //get the data at index 
+void _destroy(SLList* List); //_destroy a list and free all pointers
+Node* _traverse(SLList* List, const uint index);  //return the pointer to the node previous to the node at index 
+void _insert(SLList* List,const int index,const char* data); //_insert a node with payload data at position index
+char* _suppress(SLList* List,const int index);  //deletes a node at position index
+void _pushfront(SLList* List,const char* data); //_insert node at the front of the list
+void _pushback(SLList* List,const char* data); //_insert node at the end of the list
+char* _popfront(SLList* List);  //delete node at the back of the list
+char* _popback(SLList* List);  //delete node at the front of the list
+void _printlist(SLList* List); //print all elements in the list
+char* _getAt(SLList* List, const int index); //get the data at index 
 char* itoa(int num, char* str, int base); //converts from integer to string
 void reverse(char str[], int length); //utility function for itoa
 
 
-char* getAt(SLList* List, const int index) {
-    return (traverse(List, index)->data);
+char* _getAt(SLList* List, const int index) {
+    return (_traverse(List, index)->data);
 }
 
 SLList* initList(void) {
@@ -62,12 +62,12 @@ SLList* initList(void) {
    return List;
 }
 
-void destroy(SLList* List) {
-    while(List->size != 0) popback(List);
+void _destroy(SLList* List) {
+    while(List->size != 0) _popback(List);
     free(List);
 }
 
-void printlist(SLList* List) {
+void _printlist(SLList* List) {
     /*
     * print all elements in the list
     */
@@ -87,9 +87,9 @@ void printlist(SLList* List) {
    printf(" ]\n");
 }
 
-Node* traverse(SLList* List, const uint index) {
+Node* _traverse(SLList* List, const uint index) {
     /*
-    * give an index N, traverse() traverse the list until N and return pointer to N-1
+    * give an index N, _traverse() _traverse the list until N and return pointer to N-1
     * O(n)
     */
    
@@ -115,9 +115,9 @@ Node* traverse(SLList* List, const uint index) {
     return tmp;
 }
 
-void insert(SLList* List, int index,const char* data) {
+void _insert(SLList* List, int index,const char* data) {
     /*
-    * insert a node with data at index
+    * _insert a node with data at index
     * O(n)
     */
 
@@ -129,12 +129,12 @@ void insert(SLList* List, int index,const char* data) {
         List->head = new_node;
         new_node->next = NULL;
     } 
-    else if(index == 0) { //case 2: front insertion
+    else if(index == 0) { //case 2: front _insertion
         new_node->next = List->head;
         List->head = new_node;
     } 
-    else { //case 3: Non empty list with insert at middle
-        Node* prev = traverse(List, index);
+    else { //case 3: Non empty list with _insert at middle
+        Node* prev = _traverse(List, index);
         new_node->next = prev->next;
         prev->next = new_node;
     }
@@ -143,16 +143,16 @@ void insert(SLList* List, int index,const char* data) {
 }
 
 
-void pushfront(SLList* List,const char* data) {
+void _pushfront(SLList* List,const char* data) {
     /*
-    * insert node at the front of the list
+    * _insert node at the front of the list
     */
-   insert(List, 0, data);
+   _insert(List, 0, data);
 } 
 
-void pushback(SLList* List,const char* data) {
+void _pushback(SLList* List,const char* data) {
     /*
-    * insert node at the end of the list
+    * _insert node at the end of the list
     */
    if(List->size == 0) {
         Node* new_node = (Node*)malloc(sizeof(Node));
@@ -169,14 +169,14 @@ void pushback(SLList* List,const char* data) {
         ++List->size;
 
     } else {
-        insert(List, List->size - 1, data);
+        _insert(List, List->size - 1, data);
     }
 }  
 
 
-char* suppress(SLList* List,const int index) {
+char* _suppress(SLList* List,const int index) {
     /*
-    * suppress() deletes node at index
+    * _suppress() deletes node at index
     * O(n)
     */ 
 
@@ -200,7 +200,7 @@ char* suppress(SLList* List,const int index) {
        List->head = (List->head)->next;
 
     } else {  //case 4: deleting any node that is not head
-        Node* prev = traverse(List, index - 1);
+        Node* prev = _traverse(List, index - 1);
         to_del = prev->next;
         prev->next = to_del->next;
 
@@ -212,17 +212,17 @@ char* suppress(SLList* List,const int index) {
     return tmp;
 }
 
-char* popfront(SLList* List) {
+char* _popfront(SLList* List) {
     /*
     * delete node at the back of the list
     */
-    return suppress(List,0);
+    return _suppress(List,0);
 }  
-char* popback(SLList* List) {
+char* _popback(SLList* List) {
     /*
     * delete node at the front of the list
     */
-    return suppress(List, List->size - 1);
+    return _suppress(List, List->size - 1);
 }  
 
 char* itoa(int num, char* str, int base) { 

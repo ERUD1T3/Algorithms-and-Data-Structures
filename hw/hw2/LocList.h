@@ -1,13 +1,12 @@
 //Copyright to Josias Moukpe, 2019
 
-#ifndef PATH_H
-#define PATH_H
+#ifndef LOCLIST_H
+#define LOCLIST_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "robot_utils.h"
 
 #define MAX_STR_SIZE 64
 
@@ -16,7 +15,7 @@ typedef unsigned int uint;
 typedef struct
 {
     /* data */
-    char loc_name[128];
+    char loc_name[MAX_STR_SIZE];
     uint loc_X;
     uint loc_Y;
     bool is_visited;
@@ -27,7 +26,7 @@ typedef struct locnode {
     /*
     * LocNode for single linked list structure
     */
-    location data; //data contained in node
+    location* data; //data contained in node
     struct locnode* next; //pointer to next node
 
 } LocNode;
@@ -39,42 +38,43 @@ typedef struct {
    int size; //overall size of Single Linked List
    LocNode* head; //pointer to first element in the list
 
-} Path;
+} LocList;
 
 
 //Methods to operate on list
-Path* initPath(void); //initialize data member of the list
-void destroy(Path* List); //destroy a list and free all pointers
-LocNode* traverse(Path* List, const uint index);  //return the pointer to the node previous to the node at index 
-void insert(Path* List,const int index,location data); //insert a node with payload data at position index
-location* suppress(Path* List,const int index);  //deletes a node at position index
-void pushfront(Path* List,location data); //insert node at the front of the list
-void pushback(Path* List,location data); //insert node at the end of the list
-location* popfront(Path* List);  //delete node at the back of the list
-location* popback(Path* List);  //delete node at the front of the list
-void printlist(Path* List); //print all elements in the list
-location* getAt(Path* List, const int index); //get the data at index 
+LocList* initLocList(void); //initialize data member of the list
+void destroy(LocList* List); //destroy a list and free all pointers
+LocNode* traverse(LocList* List, const uint index);  //return the pointer to the node previous to the node at index 
+void insert(LocList* List,const int index,location* data); //insert a node with payload data at position index
+location* suppress(LocList* List,const int index);  //deletes a node at position index
+void pushfront(LocList* List,location* data); //insert node at the front of the list
+void pushback(LocList* List,location* data); //insert node at the end of the list
+location* popfront(LocList* List);  //delete node at the back of the list
+location* popback(LocList* List);  //delete node at the front of the list
+void printlist(LocList* List); //print all elements in the list
+location* getAt(LocList* List, const int index); //get the data at index 
 
-location* getAt(Path* List, const int index) {
+
+location* getAt(LocList* List, const int index) {
     return (traverse(List, index)->data);
 }
 
-Path* initPath(void) {
+LocList* initLocList(void) {
     /*
     *   initialize size to 0 and head to NULL
     */
-   Path* List = (Path*)malloc(sizeof(Path));
+   LocList* List = (LocList*)malloc(sizeof(LocList));
    List->size = 0;
    List->head = NULL;
    return List;
 }
 
-void destroy(Path* List) {
+void destroy(LocList* List) {
     while(List->size != 0) popback(List);
     free(List);
 }
 
-void printlist(Path* List) {
+void printlist(LocList* List) {
     /*
     * print all elements in the list
     */
@@ -87,14 +87,14 @@ void printlist(Path* List) {
 
    if(List->size != 0) {
        while(tmp != NULL) {
-           printf(" %s,", loc2str(tmp->data));
+           printf(" %s,", tmp->data->loc_name);
            tmp = tmp->next;
        }
    }
    printf(" ]\n");
 }
 
-LocNode* traverse(Path* List, const uint index) {
+LocNode* traverse(LocList* List, const uint index) {
     /*
     * give an index N, traverse() traverse the list until N and return pointer to N-1
     * O(n)
@@ -122,7 +122,7 @@ LocNode* traverse(Path* List, const uint index) {
     return tmp;
 }
 
-void insert(Path* List, int index, location data) {
+void insert(LocList* List, int index, location* data) {
     /*
     * insert a node with data at index
     * O(n)
@@ -150,14 +150,14 @@ void insert(Path* List, int index, location data) {
 }
 
 
-void pushfront(Path* List,location data) {
+void pushfront(LocList* List,location* data) {
     /*
     * insert node at the front of the list
     */
    insert(List, 0, data);
 } 
 
-void pushback(Path* List, location data) {
+void pushback(LocList* List, location* data) {
     /*
     * insert node at the end of the list
     */
@@ -181,7 +181,7 @@ void pushback(Path* List, location data) {
 }  
 
 
-location* suppress(Path* List,const int index) {
+location* suppress(LocList* List,const int index) {
     /*
     * suppress() deletes node at index
     * O(n)
@@ -212,23 +212,23 @@ location* suppress(Path* List,const int index) {
 
     }
 
-    location tmp = to_del->data;
+    location* tmp = to_del->data;
     free(to_del);
     --List->size;
     return tmp;
 }
 
-location* popfront(Path* List) {
+location* popfront(LocList* List) {
     /*
     * delete node at the back of the list
     */
     return suppress(List,0);
 }  
 
-location* popback(Path* List) {
+location* popback(LocList* List) {
     /*
     * delete node at the front of the list
     */
     return suppress(List, List->size - 1);
 }  
-#endif //PATH_H
+#endif //LOCLIST_H
