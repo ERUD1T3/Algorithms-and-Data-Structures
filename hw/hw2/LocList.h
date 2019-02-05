@@ -53,10 +53,21 @@ location* popfront(LocList* List);  //delete node at the back of the list
 location* popback(LocList* List);  //delete node at the front of the list
 void printlist(LocList* List); //print all elements in the list
 location* getAt(LocList* List, const int index); //get the data at index 
+void copy(LocList* dest, LocList* src); //retunns copy of the List
+void reset(LocList* List); //clears a list of its element
 
 
 location* getAt(LocList* List, const int index) {
     return (traverse(List, index)->data);
+}
+
+void copy(LocList* dest, LocList* src) {
+    //LocList* list_copy = initLocList();
+    //list_copy->size = 0;
+    for(uint i = 0; i < src->size; ++i) {
+        pushback(dest, getAt(src, i));
+    }
+    //return list_copy;
 }
 
 LocList* initLocList(void) {
@@ -72,6 +83,11 @@ LocList* initLocList(void) {
 void destroy(LocList* List) {
     while(List->size != 0) popback(List);
     free(List);
+}
+
+
+void reset(LocList* List) {
+    while(List->size != 0) popback(List);
 }
 
 void printlist(LocList* List) {

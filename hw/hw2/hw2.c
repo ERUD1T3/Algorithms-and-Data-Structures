@@ -59,26 +59,41 @@ int main(int argc, char** argv)
   n_dest = 1 + atoi(input_line); //since robot has to return to starting position
   printf("number of destionation is : %d\n", n_dest);
 
-  location* arrloc[n_dest];
+  LocList* minpath = initLocList();
+  LocList* unvisited = initLocList();
+  //location* arrloc[n_dest];
 
   for(uint i = 0; i < n_dest - 1; ++i) {
     getline(&input_line, &len, fp);
-    arrloc[i] = getLocation(parseWords(input_line));
+    pushback(unvisited, getLocation(parseWords(input_line)));
   }
-  arrloc[n_dest - 1] = arrloc[0];
+  pushback(unvisited, getAt(unvisited, 0));
 
+  printlist(unvisited);
   //for(uint i = 0; i < n_dest; ++i) printf("%s\n", arrloc[i]->loc_name);
-  printf("Total path length: %.2lf\n", path_length(arrloc, n_dest, true));
+  //printf("Total path length: %.2lf\n", path_length(arrloc, n_dest, true));
   /*
     description of each "block" (about 5 lines of instructions)
    */
 
-  LocList* visited = initLocList();
-  LocList* unvisited = initLocList();
-  for(uint i = 1; i < n_dest - 1; ++i) pushback(unvisited, arrloc[i]);
-  double min_dist = path_length(arrloc, n_dest, false);
-  minPathFinder(&min_dist, arrloc, n_dest, n_dest - 2, visited, unvisited);
+  //LocList* visited = initLocList();
+  
+  //for(uint i = 1; i < n_dest - 1; ++i) pushback(unvisited, arrloc[i]);
+  //printlist(unvisited);
+  double* min_dist;
+  *min_dist = __DBL_MAX__;
 
+  //LocList* tmp = initLocList();
+
+  
+  pathFinder(min_dist, n_dest, minpath, unvisited);
+
+  printf("%.2lf\n", path_length(minpath, true));
+
+
+  destroy(minpath);
+  //destroy(visited);
+  destroy(unvisited);
   fclose(fp);
   return EXIT_SUCCESS;
 }

@@ -24,42 +24,90 @@ typedef struct
 
 location* initLoc(char* loc_name, uint x, uint y, bool is_visited); //location constructor
 SLList* parseWords(char* line); //parse the words in line into a list
-void minPathFinder(double* min_dist, location* path[], uint size, uint rem_dest, LocList* visited, LocList* unvisited); //recursively find the path from and to start station
+void minPathFinder(
+    double* min_dist, 
+    uint rem_dest, 
+    LocList* minpath, 
+    LocList* visited,
+    LocList* unvisited, 
+    location* start_station); //recursively find the path from and to start station
 location* getLocation(SLList* cmd); //Creates a location struct from the command
 double distance(location* loc1, location* loc2); //computes the distance between two locations
-double path_length(location* path[], uint size, bool to_print); //computes the overall path length
-
-
+//double path_length(location* path[], uint size, bool to_print); //computes the overall path length
+double path_length(LocList* path, bool to_print); //computes the minimum path
+void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
 ///UNDER CONSTRUCTION///////////////////////////////////////////////
-void minPathFinder(double* min_dist, location* path[], uint size, uint rem_dest, LocList* visited, LocList* unvisited) {
+
+
+void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited) {
+
+    LocList* new_unvisited = initLocList();
+    LocList* visited = initLocList();
+
+    for(uint i = 1; i < unvisited->size - 1; ++i) pushback(new_unvisited, getAt(unvisited, i));
+    printlist(new_unvisited);
+
+    
+    minPathFinder(min_dist, rem_dest, minpath, visited, new_unvisited, getAt(unvisited, 0));
+    destroy(new_unvisited);
+    destroy(visited);
+    
+}
+
+void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* visited, LocList* unvisited, location* start_station) {
     /*
     * recursively find the path from and to the start station
     */
-   
-   for(uint i = 0; i < unvisited->size; ++i) {
-       location* curr_loc = popfront(unvisited);
-       pushback(visited, curr_loc);
+   //
+   //copy(tmp, minpath);
+    
+    printf("Visited: ");
+    printlist(visited); printf("\n");
+    printf("unvisited: ");
+    printlist(unvisited); printf("\n");
 
-       if(rem_dest == 1) {
-           for(uint i = 0; i < visited->size; ++i) 
-               path[i+1] = getAt(visited, i);
-            //path[1+visited->size] = str2loc(getAt(unvisited, 0));
-           double tmp = path_length(path, size, false);
-           if(tmp < *min_dist) {
-               *min_dist = tmp;
-               printf("found a smaller path\n");
-           }
-           else {
-               printf("didn't find a smaller path\n");
-           }
-       } 
-       else {
-        minPathFinder(min_dist, path, size, rem_dest - 1, visited, unvisited);
-       }
-       pushfront(unvisited, curr_loc);
-       popback(visited);
+    for(uint i = 0; i < unvisited->size; ++i) {
+        location* curr_loc = popfront(unvisited);
+        pushback(visited, curr_loc);
 
-   }
+        if(rem_dest == 1) { //almost all destinations have been assigned
+
+            pushfront(visited, start_station);
+            pushback(visited, start_station);
+
+            //printf("************************************\n");
+            double tmp = path_length(visited, false);
+            //printf("************************************\n");
+
+            if(tmp <= *min_dist) {
+                *min_dist = tmp;
+                reset(minpath);
+                copy(minpath, visited);
+                printf("found a smaller path: %.2lf\n", tmp);
+                printf("Minpath: ");
+                printlist(minpath); printf("\n");
+                //return;
+            }
+            else {
+                printf("didn't find a smaller path\n");
+                
+            }
+
+            popfront(visited);
+            popback(visited);
+
+        } 
+
+        else {
+
+            minPathFinder(min_dist, rem_dest - 1, minpath, visited, unvisited, start_station);
+
+        }
+
+        pushback(unvisited, curr_loc);
+        popback(visited);
+
+    }
    
 }
 
@@ -102,11 +150,13 @@ location* getLocation(SLList* cmd) {
     /*
     *  Creates a location struct from the command
     */
-    return initLoc(
+    location* loc = initLoc(
         _getAt(cmd,0),
         atoi(_getAt(cmd,1)), 
         atoi(_getAt(cmd,2)),
         false);
+    free(cmd);
+    return loc;
 }
 
 double distance(location* loc1, location* loc2) {
@@ -119,15 +169,44 @@ double distance(location* loc1, location* loc2) {
         );
 }
 
+/*
 double path_length(location* path[], uint size, bool to_print) {
     /*
         computes a path length
-    */
+    
     double total_len = 0;
     if(to_print) printf("%s %d %d %.2lf\n", path[0]->loc_name, path[0]->loc_X, path[0]->loc_Y, 0.00);
     for(uint i = 0, j = 1; j < size; ++i, ++j) {
         double dist = distance(path[i], path[j]);
         if(to_print) printf("%s %d %d %.2lf\n", path[j]->loc_name, path[j]->loc_X, path[j]->loc_Y, dist);
+        total_len += dist;
+    }
+    return total_len;
+}
+*/
+
+double path_length(LocList* path, bool to_print) {
+    /*
+        computes a path length
+    */
+
+    if(path->size == 0) return 0.0; //return zero if the patn doesn't contain any destinations
+
+    double total_len = 0;
+    
+    if(to_print) {
+        printf("%s %d %d %.2lf\n", 
+        path->head->data->loc_name, 
+        path->head->data->loc_X, 
+        path->head->data->loc_Y, 0.00);
+    } 
+    for(uint i = 0, j = 1; j < path->size; ++i, ++j) {
+        double dist = distance(getAt(path, i), getAt(path, j));
+        if(to_print) {
+            location* current = getAt(path, j);
+            printf("%s %d %d %.2lf\n", 
+            current->loc_name, current->loc_X, current->loc_Y, dist);
+        }
         total_len += dist;
     }
     return total_len;
