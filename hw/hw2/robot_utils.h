@@ -15,7 +15,7 @@ location* getLocation(SLList* cmd); //Creates a location struct from the command
 double distance(location* loc1, location* loc2); //computes the distance between two locations
 double path_length(LocList* path, bool to_print); //computes the minimum path
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
-bool isPrecedent(LocList* visited, LocList* minpath);  //compares two list for precedence
+//bool isPrecedent(LocList* visited, LocList* minpath);  //compares two list for precedence
 void pathShuffler( //recursively find the path from and to start station
     double* min_dist, 
     uint rem_dest, 
@@ -70,7 +70,13 @@ void pathShuffler(double* min_dist, uint rem_dest, LocList* minpath, LocList* vi
 
             if(curr_len <= *min_dist) {
                 *min_dist = curr_len;
-                if(isPrecedent(visited, minpath)) {
+
+                bool tmp = true;
+                if(minpath->size != 0)
+                tmp = (strcmp(((getAt(visited, 1))->loc_name), ((getAt(minpath, 1))->loc_name))  < 0);
+                //else tmp = true;
+                
+                if(tmp) {
                     reset(minpath);
                     copy(minpath, visited);
                 }
@@ -187,23 +193,25 @@ double path_length(LocList* path, bool to_print) {
     return total_len;
 }
 
+/*
 bool isPrecedent(LocList* visited, LocList* minpath) {
 
     /*
      return true if visited alphabetically precedes minpath
-    */
+    
 
     if(minpath->size == 0) return true;
 
-    for(uint i = 1; i < visited->size; ++i) {
-        char vtmp = (getAt(visited, i)->loc_name)[0];
-        char mtmp = (getAt(minpath, i)->loc_name)[0];
+    for(uint i = 1; i < visited->size - 1; ++i) {
+        //char vtmp = ()[0];
+        //char mtmp = ()[0];
 
-        if(vtmp < mtmp) {
+        if(strcmp(getAt(visited, i)->loc_name, getAt(minpath, i)->loc_name)  == 0) {
             return true;
         }
     }
     return false;
 }
+*/
 
 #endif //ROBOT_UTILS
