@@ -6,40 +6,29 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-#include "SLinkedList.h"
+#include "SLinkedList.h" 
 #include "LocList.h"
 
-/*
-typedef unsigned int uint;
-
-typedef struct
-{
-    char loc_name[128];
-    uint loc_X;
-    uint loc_Y;
-    bool is_visited;
-
-} location;
-*/
-
-location* initLoc(char* loc_name, uint x, uint y, bool is_visited); //location constructor
+location* initLoc(char* loc_name, uint x, uint y); //location constructor
 SLList* parseWords(char* line); //parse the words in line into a list
-void minPathFinder(
+location* getLocation(SLList* cmd); //Creates a location struct from the command
+double distance(location* loc1, location* loc2); //computes the distance between two locations
+double path_length(LocList* path, bool to_print); //computes the minimum path
+void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
+void minPathFinder( //recursively find the path from and to start station
     double* min_dist, 
     uint rem_dest, 
     LocList* minpath, 
     LocList* visited,
     LocList* unvisited, 
-    location* start_station); //recursively find the path from and to start station
-location* getLocation(SLList* cmd); //Creates a location struct from the command
-double distance(location* loc1, location* loc2); //computes the distance between two locations
-//double path_length(location* path[], uint size, bool to_print); //computes the overall path length
-double path_length(LocList* path, bool to_print); //computes the minimum path
-void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
-///UNDER CONSTRUCTION///////////////////////////////////////////////
+    location* start_station); 
 
 
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited) {
+
+    /*
+    * Computes the minimum path by calling minPathFinder on unvisited without start station
+    */
 
     LocList* new_unvisited = initLocList();
     LocList* visited = initLocList();
@@ -56,7 +45,7 @@ void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvi
 
 void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* visited, LocList* unvisited, location* start_station) {
     /*
-    * recursively find the path from and to the start station
+    * recursively find the path with the minimum distance
     */
     
     // printf("Visited: ");
@@ -110,7 +99,7 @@ void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* v
 }
 
 
-location* initLoc(char* loc_name, uint x, uint y, bool is_visited) {
+location* initLoc(char* loc_name, uint x, uint y) {
     /*
     *   Location constructor
     */
@@ -118,7 +107,6 @@ location* initLoc(char* loc_name, uint x, uint y, bool is_visited) {
     strcpy(loc->loc_name, loc_name);
     loc->loc_X = x;
     loc->loc_Y = y;
-    is_visited = false;
     return loc;
 }
 
@@ -151,8 +139,8 @@ location* getLocation(SLList* cmd) {
     location* loc = initLoc(
         _getAt(cmd,0),
         atoi(_getAt(cmd,1)), 
-        atoi(_getAt(cmd,2)),
-        false);
+        atoi(_getAt(cmd,2))
+        );
     free(cmd);
     return loc;
 }
@@ -166,22 +154,6 @@ double distance(location* loc1, location* loc2) {
         pow(((double)loc2->loc_X - loc1->loc_X), 2)
         );
 }
-
-/*
-double path_length(location* path[], uint size, bool to_print) {
-    /*
-        computes a path length
-    
-    double total_len = 0;
-    if(to_print) printf("%s %d %d %.2lf\n", path[0]->loc_name, path[0]->loc_X, path[0]->loc_Y, 0.00);
-    for(uint i = 0, j = 1; j < size; ++i, ++j) {
-        double dist = distance(path[i], path[j]);
-        if(to_print) printf("%s %d %d %.2lf\n", path[j]->loc_name, path[j]->loc_X, path[j]->loc_Y, dist);
-        total_len += dist;
-    }
-    return total_len;
-}
-*/
 
 double path_length(LocList* path, bool to_print) {
     /*

@@ -18,7 +18,6 @@ typedef struct
     char loc_name[MAX_STR_SIZE];
     uint loc_X;
     uint loc_Y;
-    bool is_visited;
 
 } location;
 
