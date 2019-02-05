@@ -15,6 +15,7 @@ location* getLocation(SLList* cmd); //Creates a location struct from the command
 double distance(location* loc1, location* loc2); //computes the distance between two locations
 double path_length(LocList* path, bool to_print); //computes the minimum path
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
+bool isPrecedent(LocList* visited, LocList* minpath);  //compares two list for precedence
 void minPathFinder( //recursively find the path from and to start station
     double* min_dist, 
     uint rem_dest, 
@@ -30,15 +31,16 @@ void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvi
     * Computes the minimum path by calling minPathFinder on unvisited without start station
     */
 
-    LocList* new_unvisited = initLocList();
+    LocList* reduced_unvisited = initLocList();
     LocList* visited = initLocList();
 
-    for(uint i = 1; i < unvisited->size - 1; ++i) pushback(new_unvisited, getAt(unvisited, i));
-    //printlist(new_unvisited);
+    for(uint i = 1; i < unvisited->size - 1; ++i) pushback(reduced_unvisited, getAt(unvisited, i));
+    //printlist(reduced_unvisited);
 
     
-    minPathFinder(min_dist, rem_dest - 2, minpath, visited, new_unvisited, getAt(unvisited, 0));
-    destroy(new_unvisited);
+    minPathFinder(min_dist, rem_dest - 2, minpath, visited, reduced_unvisited, getAt(unvisited, 0));
+    
+    destroy(reduced_unvisited);
     destroy(visited);
     
 }
@@ -63,14 +65,17 @@ void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* v
             pushback(visited, start_station);
 
             //printf("************************************\n");
-            double tmp = path_length(visited, false);
+            double curr_len = path_length(visited, false);
             //printf("************************************\n");
 
-            if(tmp <= *min_dist) {
-                *min_dist = tmp;
-                reset(minpath);
-                copy(minpath, visited);
-                //printf("found a smaller path: %.2lf\n", tmp);
+            if(curr_len <= *min_dist) {
+                *min_dist = curr_len;
+                if(isPrecedent(visited, minpath)) {
+                    reset(minpath);
+                    copy(minpath, visited);
+                }
+
+                //printf("found a smaller path: %.2lf\n", curr_len);
                 //printf("Minpath: ");
                 //printlist(minpath); printf("\n");
                 //return;
@@ -180,6 +185,25 @@ double path_length(LocList* path, bool to_print) {
         total_len += dist;
     }
     return total_len;
+}
+
+bool isPrecedent(LocList* visited, LocList* minpath) {
+
+    /*
+     return true if visited alphabetically precedes minpath
+    */
+
+    if(minpath->size == 0) return true;
+
+    for(uint i = 1; i < visited->size; ++i) {
+        char vtmp = (getAt(visited, i)->loc_name)[0];
+        char mtmp = (getAt(minpath, i)->loc_name)[0];
+
+        if(vtmp < mtmp) {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif //ROBOT_UTILS

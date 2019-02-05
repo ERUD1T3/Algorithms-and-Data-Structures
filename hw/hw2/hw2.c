@@ -14,86 +14,78 @@
 #include <stdbool.h>
 #include "robot_utils.h"
 
-/*
-  Description of the function, parameter, and return value (if any)
- */
-
 int main(int argc, char** argv)
 {
 
-  /*
-    description of declared variables
-   */
-  size_t len = 0;
+  //keeps track of the length of the lines
+  size_t len = 0;             
+
+  //the input line charracter array                   
+  char* input_line = NULL; 
+
+  //capture the input file name as second command line argument                       
+  char* infile = argv[1];                         
+
+  //pointer the input file
+  FILE* fp = fopen(infile, "r");                  
+
+  //tracks the number of destination for the robot to go to 
+  uint n_dest = 0;                                
 
   /*
-    description of declared variables
-   */
-  char* input_line = NULL;
-
-  /*
-    taking file name in as second argument
-   */
-  char* infile = argv[1]; 
-
-  /*
-    taking file name in as second argument
-   */
-  FILE* fp = fopen(infile, "r");
-
-  /*
-    store the number destination the map 
-  */
-  uint n_dest = 0;
-
-
-  /*
-    description of each "block" (about 5 lines of instructions)
+    L36-41: exits program if file ptr is null ie no file was found
    */
   if(fp == NULL) {
       printf("\nError: failed to open file.\n");
       exit(EXIT_FAILURE);
   }
 
+
+  /*
+    L47-48: read the first input line to obtain the number of destination
+    to which we then add 1 since robot has to return to starting position
+   */  
   getline(&input_line, &len, fp);
-  n_dest = 1 + atoi(input_line); //since robot has to return to starting position
-  //printf("number of destionation is : %d\n", n_dest);
+  n_dest = 1 + atoi(input_line);
 
-  LocList* minpath = initLocList();
+  //creating minpath list to track the destination sequence that yielded that minimal length
+  LocList* minpath = initLocList(); 
+
+  //creating unvisited list to store the destination
   LocList* unvisited = initLocList();
-  //location* arrloc[n_dest];
 
+
+  /*
+    L62-66: read the input file exactly number of destination times
+    and store the destination a pointer to a location struct in unvisited
+    Last pushback at L66 adds start station at the end of unvisited
+  */ 
   for(uint i = 0; i < n_dest - 1; ++i) {
     getline(&input_line, &len, fp);
     pushback(unvisited, getLocation(parseWords(input_line)));
   }
   pushback(unvisited, getAt(unvisited, 0));
 
-  //printlist(unvisited);
-  //for(uint i = 0; i < n_dest; ++i) printf("%s\n", arrloc[i]->loc_name);
-  //printf("Total path length: %.2lf\n", path_length(arrloc, n_dest, true));
+
+  //tracks the length of the min_dist, is originally set the max double value
+  double min_dist = __DBL_MAX__;
+  
   /*
-    description of each "block" (about 5 lines of instructions)
-   */
-
-  //LocList* visited = initLocList();
-  
-  //for(uint i = 1; i < n_dest - 1; ++i) pushback(unvisited, arrloc[i]);
-  //printlist(unvisited);
-  double* min_dist;
-  *min_dist = __DBL_MAX__;
-
-  //LocList* tmp = initLocList();
-
-  
-  pathFinder(min_dist, n_dest, minpath, unvisited);
-
+    L78-79: calls pathFinder to obtain the mininum path 
+    then print the minpath as well as its length
+    the path is printed by path_length(args....)
+  */ 
+  pathFinder(&min_dist, n_dest, minpath, unvisited);
   printf("%.2lf\n", path_length(minpath, true));
 
 
+  /*
+    L85-87:garbage collection through deallocation of memory 
+    and closing of file pointer
+  */
   destroy(minpath);
-  //destroy(visited);
   destroy(unvisited);
   fclose(fp);
+
   return EXIT_SUCCESS;
 }
