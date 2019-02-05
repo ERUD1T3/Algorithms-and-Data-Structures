@@ -45,10 +45,10 @@ void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvi
     LocList* visited = initLocList();
 
     for(uint i = 1; i < unvisited->size - 1; ++i) pushback(new_unvisited, getAt(unvisited, i));
-    printlist(new_unvisited);
+    //printlist(new_unvisited);
 
     
-    minPathFinder(min_dist, rem_dest, minpath, visited, new_unvisited, getAt(unvisited, 0));
+    minPathFinder(min_dist, rem_dest - 2, minpath, visited, new_unvisited, getAt(unvisited, 0));
     destroy(new_unvisited);
     destroy(visited);
     
@@ -58,13 +58,11 @@ void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* v
     /*
     * recursively find the path from and to the start station
     */
-   //
-   //copy(tmp, minpath);
     
-    printf("Visited: ");
-    printlist(visited); printf("\n");
-    printf("unvisited: ");
-    printlist(unvisited); printf("\n");
+    // printf("Visited: ");
+    // printlist(visited); printf("\n");
+    // printf("unvisited: ");
+    // printlist(unvisited); printf("\n");
 
     for(uint i = 0; i < unvisited->size; ++i) {
         location* curr_loc = popfront(unvisited);
@@ -83,15 +81,15 @@ void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* v
                 *min_dist = tmp;
                 reset(minpath);
                 copy(minpath, visited);
-                printf("found a smaller path: %.2lf\n", tmp);
-                printf("Minpath: ");
-                printlist(minpath); printf("\n");
+                //printf("found a smaller path: %.2lf\n", tmp);
+                //printf("Minpath: ");
+                //printlist(minpath); printf("\n");
                 //return;
             }
-            else {
-                printf("didn't find a smaller path\n");
+            //else {
+            //    printf("didn't find a smaller path\n");
                 
-            }
+            //}
 
             popfront(visited);
             popback(visited);

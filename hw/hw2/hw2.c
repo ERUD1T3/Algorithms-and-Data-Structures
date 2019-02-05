@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
   getline(&input_line, &len, fp);
   n_dest = 1 + atoi(input_line); //since robot has to return to starting position
-  printf("number of destionation is : %d\n", n_dest);
+  //printf("number of destionation is : %d\n", n_dest);
 
   LocList* minpath = initLocList();
   LocList* unvisited = initLocList();
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
   }
   pushback(unvisited, getAt(unvisited, 0));
 
-  printlist(unvisited);
+  //printlist(unvisited);
   //for(uint i = 0; i < n_dest; ++i) printf("%s\n", arrloc[i]->loc_name);
   //printf("Total path length: %.2lf\n", path_length(arrloc, n_dest, true));
   /*
