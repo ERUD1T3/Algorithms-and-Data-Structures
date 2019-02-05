@@ -16,7 +16,7 @@ double distance(location* loc1, location* loc2); //computes the distance between
 double path_length(LocList* path, bool to_print); //computes the minimum path
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
 bool isPrecedent(LocList* visited, LocList* minpath);  //compares two list for precedence
-void minPathFinder( //recursively find the path from and to start station
+void pathShuffler( //recursively find the path from and to start station
     double* min_dist, 
     uint rem_dest, 
     LocList* minpath, 
@@ -28,7 +28,7 @@ void minPathFinder( //recursively find the path from and to start station
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited) {
 
     /*
-    * Computes the minimum path by calling minPathFinder on unvisited without start station
+    * Computes the minimum path by calling pathShuffler on unvisited without start station
     */
 
     LocList* reduced_unvisited = initLocList();
@@ -38,14 +38,14 @@ void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvi
     //printlist(reduced_unvisited);
 
     
-    minPathFinder(min_dist, rem_dest - 2, minpath, visited, reduced_unvisited, getAt(unvisited, 0));
+    pathShuffler(min_dist, rem_dest - 2, minpath, visited, reduced_unvisited, getAt(unvisited, 0));
     
     destroy(reduced_unvisited);
     destroy(visited);
     
 }
 
-void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* visited, LocList* unvisited, location* start_station) {
+void pathShuffler(double* min_dist, uint rem_dest, LocList* minpath, LocList* visited, LocList* unvisited, location* start_station) {
     /*
     * recursively find the path with the minimum distance
     */
@@ -92,7 +92,7 @@ void minPathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* v
 
         else {
 
-            minPathFinder(min_dist, rem_dest - 1, minpath, visited, unvisited, start_station);
+            pathShuffler(min_dist, rem_dest - 1, minpath, visited, unvisited, start_station);
 
         }
 

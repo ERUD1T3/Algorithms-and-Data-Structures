@@ -16,8 +16,8 @@ typedef struct
 {
     /* data */
     char loc_name[MAX_STR_SIZE];
-    uint loc_X;
-    uint loc_Y;
+    uint loc_X; //x coordinate of a location 
+    uint loc_Y; //y coordinate of a location
 
 } location;
 
@@ -57,6 +57,9 @@ void reset(LocList* List); //clears a list of its element
 
 
 location* getAt(LocList* List, const int index) {
+    /*
+    * Obtain the data contained in node at index 
+    */
     return (traverse(List, index)->data);
 }
 
@@ -80,12 +83,18 @@ LocList* initLocList(void) {
 }
 
 void destroy(LocList* List) {
+    /*
+    * Deallocate all the allocated memory
+    */
     while(List->size != 0) popback(List);
     free(List);
 }
 
 
 void reset(LocList* List) {
+    /*
+    * Clear the list of all its elements
+    */
     while(List->size != 0) popback(List);
 }
 
