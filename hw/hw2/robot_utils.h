@@ -15,14 +15,21 @@ location* getLocation(SLList* cmd); //Creates a location struct from the command
 double distance(location* loc1, location* loc2); //computes the distance between two locations
 double path_length(LocList* path, bool to_print); //computes the minimum path
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited); //utilizes min path finder to output a path
+void iterPathFinder(); //iterative implementation of the path finder
 void pathShuffler( //recursively find the path from and to start station
-    double* min_dist, 
-    uint rem_dest, 
-    LocList* minpath, 
-    LocList* visited,
-    LocList* unvisited, 
-    location* start_station); 
+    double* min_dist, //reference to minimum path length
+    uint rem_dest, //remaining destinations to visit
+    LocList* minpath, //reference to the minimum path list 
+    LocList* visited, //reference to the list of visited locations
+    LocList* unvisited, //reference to the list of unvisited locations
+    location* start_station); //reference to the starting station location
 
+
+
+
+void iterPathFinder() {
+
+}
 
 void pathFinder(double* min_dist, uint rem_dest, LocList* minpath, LocList* unvisited) {
 
@@ -69,11 +76,13 @@ void pathShuffler(double* min_dist, uint rem_dest, LocList* minpath, LocList* vi
                 *min_dist = curr_len;
 
                 bool isPreceding = true;
+                /*
                 if(minpath->size != 0) 
                     isPreceding = (strcmp(((getAt(visited, 1))->loc_name), 
                                     ((getAt(minpath, 1))->loc_name))  < 0);
                 else isPreceding = true;
-
+                */
+               
                 if(isPreceding) {
                     reset(minpath);
                     copy(minpath, visited);

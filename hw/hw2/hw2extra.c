@@ -6,9 +6,6 @@
   Section: 14
   Description: Algorithm to find the shortest path in a store using a stack
 
-
-
-
  */
 
 #include <stdio.h>
