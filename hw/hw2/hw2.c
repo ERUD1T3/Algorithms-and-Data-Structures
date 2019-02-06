@@ -78,7 +78,6 @@ int main(int argc, char** argv)
   pathFinder(&min_dist, n_dest, minpath, unvisited);
   printf("%.2lf\n", path_length(minpath, true));
 
-
   /*
     L85-87:garbage collection through deallocation of memory 
     and closing of file pointer

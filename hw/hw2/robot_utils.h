@@ -72,26 +72,39 @@ void pathShuffler(double* min_dist, uint rem_dest, LocList* minpath, LocList* vi
 
             double curr_len = path_length(visited, false);
 
-            if(curr_len <= *min_dist) {
+            if(curr_len < *min_dist) {
                 *min_dist = curr_len;
+                reset(minpath);
+                
 
-                bool isPreceding = true;
-                /*
-                if(minpath->size != 0) 
-                    isPreceding = (strcmp(((getAt(visited, 1))->loc_name), 
-                                    ((getAt(minpath, 1))->loc_name))  < 0);
-                else isPreceding = true;
-                */
-               
-                if(isPreceding) {
+                //makes a call to initLocList()
+                
+                LocList* reversed = reverseList(visited); 
+                if(strcmp(((getAt(reversed, 1))->loc_name), 
+                    ((getAt(visited, 1))->loc_name))  < 0)
+                    copy(minpath, reversed);
+                else copy(minpath, visited);
+                destroy(reversed);
+                
+            } 
+
+            else 
+            if(curr_len == *min_dist) {
+                if(strcmp(((getAt(visited, 1))->loc_name), 
+                    ((getAt(minpath, 1))->loc_name))  < 0) {
                     reset(minpath);
-                    copy(minpath, visited);
-                }
 
-                //printf("found a smaller path: %.2lf\n", curr_len);
-                //printf("Minpath: ");
-                //printlist(minpath); printf("\n");
-                //return;
+                    LocList* reversed = reverseList(visited); 
+                    if(strcmp(((getAt(reversed, 1))->loc_name), 
+                        ((getAt(visited, 1))->loc_name))  < 0)
+                        copy(minpath, reversed);
+                    else copy(minpath, visited);
+                    destroy(reversed);
+                    
+                    //copy(minpath, visited);
+
+                }
+               
             }
             //else {
             //    printf("didn't find a smaller path\n");

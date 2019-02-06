@@ -53,6 +53,15 @@ void printlist(LocList* List); //print all elements in the list
 location* getAt(LocList* List, const int index); //get the data at index 
 void copy(LocList* dest, LocList* src); //retunns copy of the List
 void reset(LocList* List); //clears a list of its element
+LocList* reverseList(LocList* List); //reverse a list
+
+LocList* reverseList(LocList* List) {
+    LocList* reversed = initLocList();
+    for(uint i = 0; i < List->size; ++i)
+    pushfront(reversed, getAt(List, i));
+    //free(List);
+    return reversed;
+}
 
 
 location* getAt(LocList* List, const int index) {
@@ -94,6 +103,7 @@ void reset(LocList* List) {
     /*
     * Clear the list of all its elements
     */
+    if(List == NULL) return;
     while(List->size != 0) popback(List);
 }
 
