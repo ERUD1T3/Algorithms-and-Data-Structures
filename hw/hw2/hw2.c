@@ -4,8 +4,10 @@
   Email: jmoukpe2016@my.fit.edu 
   Course: cse2010
   Section: 14
-  Description: Algorithm to recursively find the shortest path in a store
-
+  Description: Program gets list of destinations from a file and output 
+  the combination of the destination that yields the shortest route from
+  and to the packing station and goes through all the destinations
+  
  */
 
 #include <stdio.h>
