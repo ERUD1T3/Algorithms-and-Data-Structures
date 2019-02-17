@@ -8,7 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define MAX_STR_SIZE 64
+#define MAX_STR_SIZE 256
 
 typedef unsigned int uint;
 
@@ -19,21 +19,20 @@ typedef struct node {
     char data[MAX_STR_SIZE]; //data contained in node
     //char* data;
     struct node* next; //pointer to next node
-
 } Node;
 
 typedef struct {
     /*
     * Single Linked List struct
     */ 
-   int size; //overall size of Single Linked List
+   uint size; //overall size of Single Linked List
    Node* head; //pointer to first element in the list
 
 } SLList;
 
 
 //Methods to operate on list
-SLList* initList(void); //initialize data member of the list
+SLList* _initList(void); //initialize data member of the list
 void _destroy(SLList* List); //_destroy a list and free all pointers
 Node* _traverse(SLList* List, const uint index);  //return the pointer to the node previous to the node at index 
 void _insert(SLList* List,const int index,const char* data); //_insert a node with payload data at position index
@@ -44,8 +43,6 @@ char* _popfront(SLList* List);  //delete node at the back of the list
 char* _popback(SLList* List);  //delete node at the front of the list
 void _printlist(SLList* List); //print all elements in the list
 char* _getAt(SLList* List, const int index); //get the data at index 
-char* itoa(int num, char* str, int base); //converts from integer to string
-void reverse(char str[], int length); //utility function for itoa
 SLList* parseWords(char* line); //parse words in line into nodes in list 
 
 
@@ -53,7 +50,7 @@ char* _getAt(SLList* List, const int index) {
     return (_traverse(List, index)->data);
 }
 
-SLList* initList(void) {
+SLList* _initList(void) {
     /*
     *   initialize size to 0 and head to NULL
     */
@@ -76,6 +73,7 @@ void _printlist(SLList* List) {
        printf("empty list\n");
        return;
    }
+   
    printf("[");
    Node* tmp = List->head;
 
@@ -224,67 +222,31 @@ char* _popback(SLList* List) {
     * delete node at the front of the list
     */
     return _suppress(List, List->size - 1);
-}  
-
-char* itoa(int num, char* str, int base) { 
-    int i = 0; 
-    bool isNegative = false; 
-  
-    /* Handle 0 explicitely, otherwise empty string is printed for 0 */
-    if (num == 0) 
-    { 
-        str[i++] = '0'; 
-        str[i] = '\0'; 
-        return str; 
-    } 
-  
-    // In standard itoa(), negative numbers are handled only with  
-    // base 10. Otherwise numbers are considered unsigned. 
-    if (num < 0 && base == 10) 
-    { 
-        isNegative = true; 
-        num = -num; 
-    } 
-  
-    // Process individual digits 
-    while (num != 0) 
-    { 
-        int rem = num % base; 
-        str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0'; 
-        num = num/base; 
-    } 
-  
-    // If number is negative, append '-' 
-    if (isNegative) 
-        str[i++] = '-'; 
-  
-    str[i] = '\0'; // Append string terminator 
-  
-    // Reverse the string 
-    reverse(str, i); 
-  
-    return str; 
-} 
-
-void reverse(char str[], int length) { 
-
-    int start = 0; 
-    int end = length -1; 
-    while (start < end) 
-    { 
-        char tmp = *(str+start);
-        *(str+start) = *(str+end);
-        *(str+end) = tmp;
-        start++; 
-        end--; 
-    } 
-} 
+}   
 
 SLList* parseWords(char* line) {
     /*
     * Parses the input line for relevant commands
     */ 
-    SLList* tmp = initList(); //command created with be used by then freed by parseCmd()
+   /*
+    SLList* tmp = _initList(); //command created with be used by then freed by parseCmd()
+
+    char* word_token;
+    char* delim = " \n";
+
+    //get the first token 
+    word_token = strtok(line, delim);
+
+    //walk through other tokens 
+    while(word_token != NULL) {
+        //add new words to end of the list
+        _pushback(tmp, word_token); 
+        word_token = strtok(NULL, delim);
+    }
+
+    return tmp; //return pointer to list containing commands
+    */
+   SLList* tmp = _initList(); //command created with be used by then freed by parseCmd()
 
     char* word_token;
     char* delim = " \n";

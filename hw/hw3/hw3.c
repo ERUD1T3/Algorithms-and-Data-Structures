@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "TTree.h"
+//#include "TTree.h"
 #include "SLinkedList.h"
 
 /*
@@ -22,7 +22,7 @@
 int main(int argc, char** argv)
 {
   //keeps track of the length of the lines
-  size_t len = 0;             
+  size_t len = 0;          
   //the input line charracter array                   
   char* input_line = NULL; 
 
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
    //pointer the input file
   FILE* fdata = fopen(datafile, "r");    
-  FILE* fquery = fopen(datafile, "r");   
+  //FILE* fquery = fopen(queryfile, "r");   
 
   /*
     L36-41: exits program if file ptr is null ie no file was found
@@ -40,18 +40,42 @@ int main(int argc, char** argv)
     printf("\nError: failed to open data file.\n");
     exit(EXIT_FAILURE);
   }
-  else 
+
+  /*
   if(fquery == NULL) {
     printf("\nError: failed to open query file.\n");
     exit(EXIT_FAILURE);
   }
-
+  */
   /*
-  * Reading the data file
+  * Reading the data file and building the data tree
   */ 
   while(getline(&input_line, &len, fdata) != EOF) {
+    //printf("%s",input_line);
     SLList* datalist = parseWords(input_line);
+    //printf(" input data: ");
+    _printlist(datalist);
+    //printf("\n");
   }
+
+  /*
+  * Reading query file and executing the queries
+  */ 
+ /*
+
+  while(getline(&input_line, &len, fquery) != EOF) {
+    //printf("%s",input_line);
+    SLList* querylist = parseWords(input_line);
+    printf("\n input query: ");
+    _printlist(querylist);
+    //printf("\n");
+  }
+*/
+
+
+
+  
+
 
 
   
@@ -63,7 +87,7 @@ int main(int argc, char** argv)
   */
   
   fclose(fdata);
-  fclose(fquery);
+  //fclose(fquery);
   return EXIT_SUCCESS;
 }
 
