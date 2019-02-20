@@ -32,39 +32,39 @@ int main(int argc, char** argv)
    //pointer the input file
   FILE* fdata = fopen(datafile, "r");    
   FILE* fquery = fopen(queryfile, "r");   
+
+
   /*
     L36-41: exits program if file ptr is null ie no file was found
    */
-  if(fdata == NULL) {
-    printf("\nError: failed to open data file.\n");
-    exit(EXIT_FAILURE);
-  }
-
-  
-  if(fquery == NULL) {
-    printf("\nError: failed to open query file.\n");
+  if(fdata == NULL || fquery == NULL) {
+    printf("\nError: failed to open files.\n");
     exit(EXIT_FAILURE);
   }
 
   /*
   * Reading the data file and building the data tree
   */ 
+  TNList* datalist = NULL;
+  TNList* querylist = NULL;
 
   TTree* taxonomy = initTTree();
+
+
   while(getline(&input_line, &len, fdata) != EOF) {
     //printf("%s",input_line);
-    TNList* datalist = parseWords(input_line);
-    //printf("input data: ");
-    //printlist(datalist);
-    //printf("\n");
-    //fflush(stdout);
-    //printf("about to build that tree!\n");
-    //buildTTree(taxonomy, datalist);
-    //printf("done building tree!\n");
+    datalist = parseWords(input_line);
+    printf("input data: ");
+    printlist(datalist);
+    printf("\n");
+    
+    // printf("about to build that tree!\n");
+    // buildTTree(taxonomy, datalist);
+    // printf("done building tree!\n");
     //break;
   }
 
-  printTTree(taxonomy);
+  //printTTree(taxonomy);
   
 
   /*
@@ -74,10 +74,10 @@ int main(int argc, char** argv)
 
   while(getline(&input_line, &len, fquery) != EOF) {
     //printf("%s",input_line);
-    TNList* querylist = parseWords(input_line);
+    querylist = parseWords(input_line);
     printf("input query: ");
     printlist(querylist);
-    //printf("\n");
+    printf("\n");
     //fflush(stdout);
   }
 
@@ -87,6 +87,7 @@ int main(int argc, char** argv)
   
   fclose(fdata);
   fclose(fquery);
+  
   return EXIT_SUCCESS;
 }
 
