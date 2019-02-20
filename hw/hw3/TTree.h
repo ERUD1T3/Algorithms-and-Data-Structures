@@ -65,8 +65,9 @@ void buildTTree(TTree* taxonomy, TNList* data_list) {
 
     } 
     else { //inserting non -root position
-        TNode* parent = searchNode(taxonomy, getAt(data_list, 0));
-        printf("we are now inserting at %s\n", parent->data);
+        char* tmp_data  = getAt(data_list, 0);
+        TNode* parent = searchNode(taxonomy, tmp_data);
+        //printf("we are now inserting at %s\n\n", parent->data);
         for(uint i = 1; i < data_list->size; ++i) { //adding children
             //taxonomy->root->children = initTNList();
             insertChild(getAt(data_list, i), parent);
@@ -135,13 +136,19 @@ void preOrder(TNode* root) {
 }
 
 TNode* preOrderSearch(TNode* root, char* key) {
-    if(root == NULL) return NULL;
-    //printf("%s ", root->data);
+    /*
+    * search the tree for a value.
+    */ 
     if(!strcmp(root->data, key)) return root;
 
     for(uint i = 0; i < root->children->size; ++i) {
-        return preOrderSearch(getChild(root->children, i), key);
+        TNode* child = getChild(root->children, i);
+        TNode* tmp = preOrderSearch(child, key);
+        if(tmp != NULL) return tmp;
+        //else if(!strcmp(tmp->data, key)) return tmp;
+        //else return tmp;
     }
+    return NULL;
 }
 
 void printTTree(TTree* taxonomy) {
@@ -149,6 +156,7 @@ void printTTree(TTree* taxonomy) {
     * calles preOrder to print the tree
     */ 
     preOrder(taxonomy->root);
+    printf("\n");
 }
 
 TTree* initTTree() {
@@ -199,7 +207,6 @@ void insertChild(char* child_data, TNode* parent) {
     }
 
     ++(parent->children->size);
-
 }
 
 
