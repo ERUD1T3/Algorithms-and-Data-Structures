@@ -13,7 +13,7 @@ typedef struct ttree TTree; // ... of tree
 struct ttree {
     uint size;
     struct tnode* root; //pointer to root node of the tree
-    struct tnlist* allnodes; //list of all nodes present in the tree
+    //struct tnlist* allnodes; //list of all nodes present in the tree
 };
 
 /****************************************
@@ -45,7 +45,7 @@ TNode* searchNode(TTree* taxonomy, char* data) {
     /*
     * Search the tree for data node and return the pointer to the data node
     */ 
-  return preOrderSearch(taxonomy->root, data);
+    return preOrderSearch(taxonomy->root, data);
 }
 
 void buildTTree(TTree* taxonomy, TNList* data_list) {
@@ -166,7 +166,7 @@ TTree* initTTree() {
     */
    TTree* new_tree = (TTree*)malloc(sizeof(TTree));
    new_tree->root = NULL;
-   new_tree->allnodes = initTNList();
+   //new_tree->allnodes = initTNList();
 
    return new_tree;
 

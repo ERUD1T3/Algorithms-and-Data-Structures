@@ -52,11 +52,9 @@ TNList* parseWords(char* line); //parse the input into TNList
  ***************************************/ 
 
 TNode* initTNode(char* data, TNode* parent, TNList* children) {
-
     /*
     * Creates a new node for the tree
     */ 
-
     TNode* new_node = (TNode*)malloc(sizeof(TNode));
     strcpy(new_node->data, data);
     new_node->parent = parent;
@@ -105,7 +103,7 @@ void printlist(TNList* List) {
        return;
    }
 
-   printf("[");
+   //printf("[");
    TNode* tmp = List->head;
 
    if(List->size != 0) {
@@ -114,7 +112,7 @@ void printlist(TNList* List) {
            tmp = tmp->next;
        }
    }
-   printf(" ]\n");
+   //printf("\n");
 }
 
 TNode* traverse(TNList* List,  uint index) {

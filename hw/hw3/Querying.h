@@ -34,30 +34,40 @@ void directSuperCategory(TTree* taxonomy, char* category) {
     /*
     *return the data in the parent of the category
     */
-
+    TNode* target = searchNode(taxonomy, category);
+    printf(" %s", target->parent->data);
 }
 
 void directSubCategories(TTree* taxonomy, char* category) {
     /*
     *return the data in the children list
     */
-
+    TNode* target = searchNode(taxonomy, category);
+    printlist(target->children);
 }
 
 void allSuperCategories(TTree* taxonomy, char* category) {
     /*
     *return data in all ancestors
     */
-
+    TNode* target = searchNode(taxonomy, category);
+    TNode* ancestor = target->parent;
+    while(ancestor != NULL) {
+        printf(" %s", ancestor->data);
+        ancestor = ancestor->parent;
+    }
 }
 
+//UNDER CONSTRUCTION
 void allSubCategories(TTree* taxonomy, char* category) {
     /*
     *return the data in the parent of the category
     */
-
+    TNode* target = searchNode(taxonomy, category);
+    preOrder(target);
 }
 
+//UNDER CONSTRUCTION
 void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
     /*
     *return the data in the parent of the category
@@ -65,6 +75,7 @@ void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
 
 }
 
+//UNDER CONSTRUCTION
 void numberOfAllSubCategories(TTree* taxonomy, char* category) {
      /*
     *return the data in the parent of the category
@@ -75,15 +86,25 @@ void isSuperCategory(TTree* taxonomy, char* category, char* supercategory) {
     /*
     *return the data in the parent of the category
     */
-
+    TNode* target = searchNode(taxonomy, category);
+    if(!strcmp(target->parent->data, supercategory)) 
+        printf(" yes");
+    else 
+        printf(" no");
 }
 
 void isSubCategory(TTree* taxonomy, char* category, char* subcategory) {
     /*
     *return the data in the parent of the category
     */
+    TNode* target = searchNode(taxonomy, category);
+    if(preOrderSearch(target, subcategory) != NULL) 
+        printf(" yes");
+    else 
+        printf(" no");
 }
 
+//UNDER CONSTRUCTION
 void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category2) {
     /*
     *return the data in the parent of the category
