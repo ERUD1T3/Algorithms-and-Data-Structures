@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     garbage collection and clean up closing the files
   */
 
-  //destroyTTree(taxonomy);
+  destroyTTree(taxonomy);
   fclose(fdata);
   fclose(fquery);
   

@@ -11,6 +11,7 @@
 typedef struct ttree TTree; // ... of tree
 
 struct ttree {
+    uint size;
     struct tnode* root; //pointer to root node of the tree
     struct tnlist* allnodes; //list of all nodes present in the tree
 };
@@ -33,7 +34,7 @@ TNode* searchNode(TTree* taxonomy,  char* data); //search the tree for node cont
 void insertChild( char* child_data, TNode* parent);
 void preOrder(TNode* root);
 TNode* preOrderSearch(TNode* root, char* key);
-
+void recDestroy(TNode* root); //recursively destroy all nodes in tree
 
 /*******************************************
  * TTree Methods
@@ -171,11 +172,20 @@ TTree* initTTree() {
 
 }
 
+void recDestroy(TNode* root) {
+    for(uint i = 0; i < root->children->size; ++i) {
+        recDestroy(getChild(root->children, i));
+    }
+    
+    if(root == NULL) return;
+    destroyTNode(root);   
+}
+
 void destroyTTree(TTree* to_del) {
     /*
     * Traverses the tree to delete all its nodes Clears the memory of the tree
     */
-    destroyTNList(to_del->allnodes);
+    recDestroy(to_del->root);
     free(to_del);
 }
 
