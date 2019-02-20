@@ -61,10 +61,6 @@ int main(int argc, char** argv)
     
     //printf("about to build that tree!\n");
     buildTTree(taxonomy, datalist);
-    //printf("done building tree!\n");
-    //break;
-    // if(counter > 1) break;
-    // counter++;
   }
 
   printTTree(taxonomy);

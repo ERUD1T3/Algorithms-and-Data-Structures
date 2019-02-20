@@ -35,7 +35,7 @@ void directSuperCategory(TTree* taxonomy, char* category) {
     *return the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
-    printf(" %s", target->parent->data);
+    printf("%s", target->parent->data);
 }
 
 void directSubCategories(TTree* taxonomy, char* category) {
@@ -53,18 +53,17 @@ void allSuperCategories(TTree* taxonomy, char* category) {
     TNode* target = searchNode(taxonomy, category);
     TNode* ancestor = target->parent;
     while(ancestor != NULL) {
-        printf(" %s", ancestor->data);
+        printf("%s ", ancestor->data);
         ancestor = ancestor->parent;
     }
 }
 
-//UNDER CONSTRUCTION
 void allSubCategories(TTree* taxonomy, char* category) {
     /*
     *return the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
-    preOrder(target);
+    preOrder(target, NULL);
 }
 
 //UNDER CONSTRUCTION
@@ -72,14 +71,27 @@ void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
     /*
     *return the data in the parent of the category
     */
+    TNode* target = searchNode(taxonomy, category);
+    TNode* ancestor = target->parent;
+    uint counter = 0;
+    while(ancestor != NULL) {
+        //printf("%s", ancestor->data);
+        ++counter;
+        ancestor = ancestor->parent;
+    }
+    printf("%d", counter);
 
 }
 
 //UNDER CONSTRUCTION
 void numberOfAllSubCategories(TTree* taxonomy, char* category) {
-     /*
+    /*
     *return the data in the parent of the category
     */
+    TNode* target = searchNode(taxonomy, category);
+    uint counter = 0;
+    preOrder(target, &counter);
+    printf("%d", counter - 1); //removing the root of the subtree
 }
 
 void isSuperCategory(TTree* taxonomy, char* category, char* supercategory) {
@@ -87,10 +99,8 @@ void isSuperCategory(TTree* taxonomy, char* category, char* supercategory) {
     *return the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
-    if(!strcmp(target->parent->data, supercategory)) 
-        printf(" yes");
-    else 
-        printf(" no");
+    if(!strcmp(target->parent->data, supercategory)) printf("yes");
+    else printf("no");
 }
 
 void isSubCategory(TTree* taxonomy, char* category, char* subcategory) {
@@ -98,10 +108,8 @@ void isSubCategory(TTree* taxonomy, char* category, char* subcategory) {
     *return the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
-    if(preOrderSearch(target, subcategory) != NULL) 
-        printf(" yes");
-    else 
-        printf(" no");
+    if(preOrderSearch(target, subcategory) != NULL) printf("yes");
+    else printf("no");
 }
 
 //UNDER CONSTRUCTION
@@ -109,7 +117,7 @@ void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category
     /*
     *return the data in the parent of the category
     */
-
+    
 }
 
 
@@ -131,7 +139,7 @@ void processQuery(TTree* taxonomy, TNList* query_list) {
     }
     else 
     if(!strcmp(getAt(query_list, 0), "AllSubcategories")) {
-        allSuperCategories(taxonomy, getAt(query_list, 1));
+        allSubCategories(taxonomy, getAt(query_list, 1));
     }
     else 
     if(!strcmp(getAt(query_list, 0), "NumberOfAllSupercategories")) {
@@ -139,7 +147,7 @@ void processQuery(TTree* taxonomy, TNList* query_list) {
     }
     else 
     if(!strcmp(getAt(query_list, 0), "NumberOfAllSubcategories")) {
-        allSubCategories(taxonomy, getAt(query_list, 1));
+        numberOfAllSubCategories(taxonomy, getAt(query_list, 1));
     }
     else 
     if(!strcmp(getAt(query_list, 0), "IsSupercategory")) {

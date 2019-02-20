@@ -29,10 +29,9 @@ void addChild(TNode* parent,  char* child);
 void insertNode(TTree* tree, TNode* node, TNode* parent); //inserts a new node into tree
 void printTTree(TTree* taxonomy);
 void buildTTree(TTree* taxonomy, TNList* data_list); //insert a new node in Tree
-//void insertTNode(TTree* taxonomy, TNList* data_list); //insert a new node in Tree
 TNode* searchNode(TTree* taxonomy,  char* data); //search the tree for node containing data
 void insertChild( char* child_data, TNode* parent);
-void preOrder(TNode* root);
+void preOrder(TNode* root, uint* counter);
 TNode* preOrderSearch(TNode* root, char* key);
 void recDestroy(TNode* root); //recursively destroy all nodes in tree
 
@@ -40,6 +39,43 @@ void recDestroy(TNode* root); //recursively destroy all nodes in tree
  * TTree Methods
  ******************************************/
 
+void recDestroy(TNode* root) {
+    /*
+    *   recursively destroying nodes in preorder from root
+    */ 
+    for(uint i = 0; i < root->children->size; ++i) 
+        recDestroy(getChild(root->children, i));
+
+    if(root == NULL) return;
+    destroyTNode(root);   
+}
+
+void preOrder(TNode* root, uint* counter) {
+    if(root == NULL) return;
+     
+    if(counter != NULL) (*counter)++; //preOrder is in counting mode
+    else printf("%s ", root->data); //preOrder is in printing mode
+
+    for(uint i = 0; i < root->children->size; ++i) {
+        preOrder(getChild(root->children, i), counter);
+    }
+}
+
+TNode* preOrderSearch(TNode* root, char* key) {
+    /*
+    * search the tree for a value.
+    */ 
+    if(!strcmp(root->data, key)) return root;
+
+    for(uint i = 0; i < root->children->size; ++i) {
+        TNode* child = getChild(root->children, i);
+        TNode* tmp = preOrderSearch(child, key);
+        if(tmp != NULL) return tmp;
+        //else if(!strcmp(tmp->data, key)) return tmp;
+        //else return tmp;
+    }
+    return NULL;
+}
 
 TNode* searchNode(TTree* taxonomy, char* data) {
     /*
@@ -107,56 +143,11 @@ void addChild(TNode* parent,  char* child_data) {
     insertChild(child_data, parent);
 }
 
-// void insertTNode(TTree* taxonomy, TNode* node, TNode* parent) {
-//     if(taxonomy == NULL) {
-//         printf("NULL tree");
-//         return;
-//     }
-
-//     if(taxonomy->allnodes->size == 0) { //adding root
-//         taxonomy->root = node;
-//         node->parent = NULL;
-//         node->children = NULL;
-//     } 
-//     else { //adding a child
-//         TNode* tmp = taxonomy->allnodes->head;
-//         //while(tmp->next != NULL && ) tmp
-//     }
-
-//     //insertSort(taxonomy->allnodes, node);
-// }
-
-
-void preOrder(TNode* root) {
-    if(root == NULL) return;
-    printf("%s ", root->data);
-
-    for(uint i = 0; i < root->children->size; ++i) {
-        preOrder(getChild(root->children, i));
-    }
-}
-
-TNode* preOrderSearch(TNode* root, char* key) {
-    /*
-    * search the tree for a value.
-    */ 
-    if(!strcmp(root->data, key)) return root;
-
-    for(uint i = 0; i < root->children->size; ++i) {
-        TNode* child = getChild(root->children, i);
-        TNode* tmp = preOrderSearch(child, key);
-        if(tmp != NULL) return tmp;
-        //else if(!strcmp(tmp->data, key)) return tmp;
-        //else return tmp;
-    }
-    return NULL;
-}
-
 void printTTree(TTree* taxonomy) {
     /*
     * calles preOrder to print the tree
     */ 
-    preOrder(taxonomy->root);
+    preOrder(taxonomy->root, NULL);
     printf("\n");
 }
 
@@ -170,15 +161,6 @@ TTree* initTTree() {
 
    return new_tree;
 
-}
-
-void recDestroy(TNode* root) {
-    for(uint i = 0; i < root->children->size; ++i) {
-        recDestroy(getChild(root->children, i));
-    }
-    
-    if(root == NULL) return;
-    destroyTNode(root);   
 }
 
 void destroyTTree(TTree* to_del) {

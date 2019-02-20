@@ -108,7 +108,7 @@ void printlist(TNList* List) {
 
    if(List->size != 0) {
        while(tmp != NULL) {
-           printf(" %s", tmp->data);
+           printf("%s ", tmp->data);
            tmp = tmp->next;
        }
    }
@@ -169,39 +169,6 @@ void insert(TNList* List,  uint index, char* data) {
 
     ++List->size;
 }
-
-// void insertSort(TNList* List,  char* data, TNode* parent) {
-//     /*
-//     * _insert a node with data at index
-//     * O(n)
-//     */
-
-//     TNode* new_node = (TNode*)malloc(sizeof(TNode));
-//     strcpy(new_node->data,data);
-//     new_node->parent = parent;
-    
-
-    
-//     if(List->size == 0) { //case 1: empty list
-//         List->head = new_node;
-//         new_node->next = NULL;
-//     } 
-//     else if(strcmp(List->head->data, data) > 0) { //case 2: front _insertion
-//         new_node->next = List->head;
-//         List->head = new_node;
-//     } 
-//     else { //case 3: Non empty list with _insert at middle
-//         TNode* prev = List->head;
-//         while(prev->next != NULL && (strcmp(prev->next->data, data) < 0)) 
-//             prev = prev->next;
-//         new_node->next = prev->next;
-//         prev->next = new_node;
-//     }
-
-//     ++List->size;
-// }
-
-
 
 void pushfront(TNList* List, char* data) {
     /*
