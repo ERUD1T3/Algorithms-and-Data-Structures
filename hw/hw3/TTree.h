@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include "TNList.h" //for TNode and TNList
 
-
 typedef struct ttree TTree; // ... of tree
 
 struct ttree {

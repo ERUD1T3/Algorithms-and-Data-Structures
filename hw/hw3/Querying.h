@@ -24,7 +24,6 @@ void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category
 void processQuery(TTree* taxonomy, TNList* query_list);
 
 
-
 /**************************************
  * QUERY METHODS
  *************************************/ 
@@ -117,7 +116,27 @@ void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category
     /*
     *return the data in the parent of the category
     */
-    
+    TNode* target1 = searchNode(taxonomy, category1);
+    TNode* target2 = searchNode(taxonomy, category2);
+
+    TNList* ancestors = initTNList();
+    TNode* ancestor = target1->parent;
+
+    while(ancestor != NULL) {
+        pushback(ancestors, ancestor->data);
+        ancestor = ancestor->parent;
+    }
+
+    ancestor = target2->parent;
+    while(ancestor != NULL) {
+        for(uint i = 0; i < ancestors->size; ++i) {
+            if(strcmp(ancestor->data, getAt(ancestors, i))) {
+                printf("%s", ancestor->data);
+                return;
+            }
+        }
+        ancestor = ancestor->parent;
+    }
 }
 
 

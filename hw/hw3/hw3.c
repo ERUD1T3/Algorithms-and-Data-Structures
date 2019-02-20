@@ -50,35 +50,24 @@ int main(int argc, char** argv)
 
   TTree* taxonomy = initTTree();
 
-  uint counter = 0; 
-
   while(getline(&input_line, &len, fdata) != EOF) {
-    
-    //printf("%s",input_line);
     datalist = parseWords(input_line);
-    //printf("input data: ");
-    //printlist(datalist);
-    
-    //printf("about to build that tree!\n");
     buildTTree(taxonomy, datalist);
   }
 
-  printTTree(taxonomy);
-  printf("\n");
+  // printTTree(taxonomy);
+  // printf("\n");
   
 
   /*
   * Reading query file and executing the queries
   */ 
   while(getline(&input_line, &len, fquery) != EOF) {
-    //printf("%s",input_line);
     querylist = parseWords(input_line);
-    //printf("input query: ");
     printlist(querylist);
     processQuery(taxonomy, querylist);
     printf("\n");
   }
-
 
   /*
     garbage collection and clean up closing the files
