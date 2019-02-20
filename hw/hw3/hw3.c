@@ -58,33 +58,34 @@ int main(int argc, char** argv)
     printlist(datalist);
     printf("\n");
     
-    // printf("about to build that tree!\n");
-    // buildTTree(taxonomy, datalist);
-    // printf("done building tree!\n");
-    //break;
+    printf("about to build that tree!\n");
+    buildTTree(taxonomy, datalist);
+    printf("done building tree!\n");
+    break;
   }
 
-  //printTTree(taxonomy);
+  printTTree(taxonomy);
+  printf("\n");
   
 
   /*
   * Reading query file and executing the queries
   */ 
-
-
   while(getline(&input_line, &len, fquery) != EOF) {
     //printf("%s",input_line);
     querylist = parseWords(input_line);
     printf("input query: ");
     printlist(querylist);
     printf("\n");
-    //fflush(stdout);
+    processQuery(taxonomy, querylist);
   }
 
+
   /*
-    description of each "block" (about 5 lines of instructions)
+    garbage collection and clean up closing the files
   */
-  
+
+  //destroyTTree(taxonomy);
   fclose(fdata);
   fclose(fquery);
   

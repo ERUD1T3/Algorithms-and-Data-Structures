@@ -23,14 +23,14 @@ TTree* initTTree(); //initialize a Taxonomic tree
 void destroyTTree(TTree* to_del); //clear memory of Taxonomic tree
 TNList* getChildren(TNode* parent);
 TNode* getParent(TNode* child);
-TNode* getChild(TNList* children, const uint index);
-void addChild(TNode* parent, TNode* child);
+TNode* getChild(TNList* children,  uint index);
+void addChild(TNode* parent,  char* child);
 void insertNode(TTree* tree, TNode* node, TNode* parent); //inserts a new node into tree
 void printTTree(TTree* taxonomy);
 void buildTTree(TTree* taxonomy, TNList* data_list); //insert a new node in Tree
 //void insertTNode(TTree* taxonomy, TNList* data_list); //insert a new node in Tree
-TNode* search(TTree* taxonomy, const char* data); //search the tree for node containing data
-
+TNode* search(TTree* taxonomy,  char* data); //search the tree for node containing data
+void insertChild( char* child_data, TNode* parent);
 void preOrder(TNode* root);
 
 
@@ -52,33 +52,41 @@ TNList* getChildren(TNode* parent) {
    return parent->children;
 }
 
-TNode* getChild(TNList* children, const uint index) {
+TNode* getChild(TNList* children,  uint index) {
     /*
     * Returns a pointer to a specific child in the list of Children
     */
     return (traverse(children, index));
 }
 
-void addChild(TNode* parent, TNode* child) {
+void addChild(TNode* parent,  char* child_data) {
     /*
     * Adds a child node to parent list of children
     */
-    insertSort(parent->children, child);
-    child->parent = parent;
+    insertChild(child_data, parent);
 }
 
 
 void buildTTree(TTree* taxonomy, TNList* data_list) {
 
+    /*
+    * build a tree with the data_list
+    * parent data is getAt(data_list, 0)
+    * children data is getAt(data_list, 1 to data_list->size -1)
+    */ 
+
     if (taxonomy->root == NULL) {
         //char* tmp = getAt(data_list, 0);
-        taxonomy->root = initTNode(getAt(data_list, 0), NULL, NULL);
-
+        taxonomy->root = initTNode(getAt(data_list, 0), NULL, initTNList());
         //adding children
         for(uint i = 1; i < data_list->size; ++i) {
-            taxonomy->root->children = initTNList();
-            // insertSort(taxonomy->root->children, getAt(data_list, i), taxonomy->root);
+            //taxonomy->root->children = initTNList();
+            insertChild(getAt(data_list, i), taxonomy->root);
         }
+
+    } 
+    else { //inserting non -root position
+        printf("we are now inserting at non-root position");
 
     }
     
@@ -102,13 +110,14 @@ void insertTNode(TTree* taxonomy, TNode* node, TNode* parent) {
         //while(tmp->next != NULL && ) tmp
     }
 
-    insertSort(taxonomy->allnodes, node);
+    //insertSort(taxonomy->allnodes, node);
 }
 
 
 void preOrder(TNode* root) {
     if(root == NULL) return;
-    printf("%s", root->data);
+    printf("%s ", root->data);
+
     for(uint i = 0; i < root->children->size; ++i) {
         preOrder(getChild(root->children, i));
     }
@@ -137,6 +146,37 @@ void destroyTTree(TTree* to_del) {
     */
     destroyTNList(to_del->allnodes);
     free(to_del);
+}
+
+void insertChild(char* child_data, TNode* parent) {
+    /*
+    Insert node at right position
+    */  
+    TNode* child = initTNode(child_data, parent, initTNList());
+
+    if(parent->children == NULL) {
+        printf("Cannot insert in null list");
+        return;
+    }
+
+    if(parent->children->size == 0) { //case 1: empty children
+        parent->children->head = child;
+        child->next = NULL;
+    } 
+    else 
+    if(strcmp(parent->children->head->data, child->data) > 0) { //case 2: front _insertion
+        child->next = parent->children->head;
+        parent->children->head = child;
+    } 
+    else { //case 3: Non empty children with insert at middle
+        TNode* prev = parent->children->head;
+        while(prev->next != NULL && (strcmp(prev->next->data, child->data) < 0)) prev = prev->next;
+        child->next = prev->next;
+        prev->next = child;
+    }
+
+    ++(parent->children->size);
+
 }
 
 

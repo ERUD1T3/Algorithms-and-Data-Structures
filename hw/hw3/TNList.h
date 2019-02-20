@@ -34,18 +34,17 @@ void destroyTNode(TNode* to_del); //clear memory of Taxonomic node
 
 TNList* initTNList(); //initialize a list of TNodes
 void destroyTNList(TNList* to_del); //clear memory of Taxonomic node
-TNode* traverse(TNList* List, const uint index);  //return the pointer to the node previous to the node at index 
-void insert(TNList* List,const uint index,const char* data); //_insert a node with payload data at position index
-// void insertSort(TNList* List, const char* data, TNode* parent);
-char* suppress(TNList* List,const uint index);  //deletes a node at position index
-void pushfront(TNList* List,const char* data); //_insert node at the front of the list
-void pushback(TNList* List,const char* data); //_insert node at the end of the list
+TNode* traverse(TNList* List,  uint index);  //return the pointer to the node previous to the node at index 
+void insert(TNList* List, uint index, char* data); //_insert a node with payload data at position index
+// void insertSort(TNList* List,  char* data, TNode* parent);
+char* suppress(TNList* List, uint index);  //deletes a node at position index
+void pushfront(TNList* List, char* data); //_insert node at the front of the list
+void pushback(TNList* List, char* data); //_insert node at the end of the list
 char* popfront(TNList* List);  //delete node at the back of the list
 char* popback(TNList* List);  //delete node at the front of the list
 void printlist(TNList* List); //print all elements in the list
-char* getAt(TNList* List, const uint index); //get the data at index 
+char* getAt(TNList* List,  uint index); //get the data at index 
 TNList* parseWords(char* line); //parse the input into TNList
-void insertSort(TNList* children, TNode* child);
 
 
 /****************************************
@@ -62,6 +61,7 @@ TNode* initTNode(char* data, TNode* parent, TNList* children) {
     strcpy(new_node->data, data);
     new_node->parent = parent;
     new_node->children = children;
+    new_node->next = NULL;
     return new_node;
 }
 
@@ -77,7 +77,7 @@ void destroyTNode(TNode* to_del) {
  * TNList Methods
  ******************************************/
 
-char* getAt(TNList* List, const uint index) {
+char* getAt(TNList* List,  uint index) {
     return (traverse(List, index)->data);
 }
 
@@ -117,7 +117,7 @@ void printlist(TNList* List) {
    //printf("]\n");
 }
 
-TNode* traverse(TNList* List, const uint index) {
+TNode* traverse(TNList* List,  uint index) {
     /*
     * give an index N, _traverse() _traverse the list until N and return pointer to N-1
     * O(n)
@@ -145,7 +145,7 @@ TNode* traverse(TNList* List, const uint index) {
     return tmp;
 }
 
-void insert(TNList* List, const uint index,const char* data) {
+void insert(TNList* List,  uint index, char* data) {
     /*
     * _insert a node with data at index
     * O(n)
@@ -172,7 +172,7 @@ void insert(TNList* List, const uint index,const char* data) {
     ++List->size;
 }
 
-// void insertSort(TNList* List, const char* data, TNode* parent) {
+// void insertSort(TNList* List,  char* data, TNode* parent) {
 //     /*
 //     * _insert a node with data at index
 //     * O(n)
@@ -203,44 +203,16 @@ void insert(TNList* List, const uint index,const char* data) {
 //     ++List->size;
 // }
 
-void insertSort(TNList* children, TNode* child) {
-    /*
-    Insert node at right position
-    */  
 
-    if(children == NULL) {
-        printf("Cannot insert in null list");
-        return;
-    }
 
-    if(children->size == 0) { //case 1: empty children
-        children->head = child;
-        child->next = NULL;
-    } 
-    else 
-    if(strcmp(children->head->data, child->data) > 0) { //case 2: front _insertion
-        child->next = children->head;
-        children->head = child;
-    } 
-    else { //case 3: Non empty children with insert at middle
-        TNode* prev = children->head;
-        while(prev->next != NULL && (strcmp(prev->next->data, child->data) < 0)) prev = prev->next;
-        child->next = prev->next;
-        prev->next = child;
-    }
-
-    ++children->size;
-
-}
-
-void pushfront(TNList* List,const char* data) {
+void pushfront(TNList* List, char* data) {
     /*
     * _insert node at the front of the list
     */
    insert(List, 0, data);
 } 
 
-void pushback(TNList* List,const char* data) {
+void pushback(TNList* List, char* data) {
     /*
     * _insert node at the end of the list
     */
@@ -263,7 +235,7 @@ void pushback(TNList* List,const char* data) {
     }
 }  
 
-char* suppress(TNList* List,const uint index) {
+char* suppress(TNList* List, uint index) {
     /*
     * _suppress() deletes node at index
     * O(n)
