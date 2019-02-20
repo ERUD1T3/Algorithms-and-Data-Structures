@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define SIZE 64
+#define SIZE 32
 
 typedef unsigned int uint;
 typedef struct tnode TNode; //predefinions of node
@@ -105,7 +105,7 @@ void printlist(TNList* List) {
        return;
    }
 
-   //printf("[ ");
+   printf("[");
    TNode* tmp = List->head;
 
    if(List->size != 0) {
@@ -114,7 +114,7 @@ void printlist(TNList* List) {
            tmp = tmp->next;
        }
    }
-   //printf("]\n");
+   printf(" ]\n");
 }
 
 TNode* traverse(TNList* List,  uint index) {
@@ -294,7 +294,7 @@ TNList* parseWords(char* line) {
    TNList* tmp = initTNList(); //command created with be used by then freed by parseCmd()
 
     char* word_token;
-    char* delim = " \n";
+    char* delim = " \r\n";
 
     //get the first token 
     word_token = strtok(line, delim);

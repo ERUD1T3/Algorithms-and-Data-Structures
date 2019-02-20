@@ -58,10 +58,10 @@ int main(int argc, char** argv)
     printlist(datalist);
     printf("\n");
     
-    printf("about to build that tree!\n");
+    //printf("about to build that tree!\n");
     buildTTree(taxonomy, datalist);
-    printf("done building tree!\n");
-    break;
+    //printf("done building tree!\n");
+    //break;
   }
 
   printTTree(taxonomy);
@@ -71,14 +71,14 @@ int main(int argc, char** argv)
   /*
   * Reading query file and executing the queries
   */ 
-  while(getline(&input_line, &len, fquery) != EOF) {
-    //printf("%s",input_line);
-    querylist = parseWords(input_line);
-    printf("input query: ");
-    printlist(querylist);
-    printf("\n");
-    processQuery(taxonomy, querylist);
-  }
+  // while(getline(&input_line, &len, fquery) != EOF) {
+  //   //printf("%s",input_line);
+  //   querylist = parseWords(input_line);
+  //   printf("input query: ");
+  //   printlist(querylist);
+  //   printf("\n");
+  //   processQuery(taxonomy, querylist);
+  // }
 
 
   /*
