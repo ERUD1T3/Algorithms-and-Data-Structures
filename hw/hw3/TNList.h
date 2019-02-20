@@ -99,19 +99,19 @@ void printlist(TNList* List) {
     /*
     * print all elements in the list
     */
-   if(List == NULL || List->size == 0 ) {
-       printf("empty list\n");
-       return;
-   }
+    if(List == NULL || List->size == 0 ) {
+        printf("empty list\n");
+        return;
+    }
 
-   TNode* tmp = List->head;
+    TNode* tmp = List->head;
 
-   if(List->size != 0) {
-       while(tmp != NULL) {
-           printf("%s ", tmp->data);
-           tmp = tmp->next;
-       }
-   }
+    if(List->size != 0) {
+        while(tmp != NULL) {
+            printf("%s ", tmp->data);
+            tmp = tmp->next;
+        }
+    }
 }
 
 TNode* traverse(TNList* List,  uint index) {
@@ -152,7 +152,8 @@ void insert(TNList* List,  uint index, char* data) {
         List->head = new_node;
         new_node->next = NULL;
     } 
-    else if(index == 0) { //case 2: front _insertion
+    else 
+    if(index == 0) { //case 2: front _insertion
         new_node->next = List->head;
         List->head = new_node;
     } 
@@ -238,6 +239,7 @@ char* popfront(TNList* List) {
     */
     return suppress(List,0);
 }  
+
 char* popback(TNList* List) {
     /*
     * delete node at the front of the list
@@ -249,7 +251,6 @@ TNList* parseWords(char* line) {
     /*
     * Parses the input line for relevant commands
     */ 
-
    TNList* tmp = initTNList(); //command created with be used by then freed by parseCmd()
 
     char* word_token;
