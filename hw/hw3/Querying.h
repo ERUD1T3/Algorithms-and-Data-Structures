@@ -130,7 +130,7 @@ void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category
     ancestor = target2->parent;
     while(ancestor != NULL) {
         for(uint i = 0; i < ancestors->size; ++i) {
-            if(strcmp(ancestor->data, getAt(ancestors, i))) {
+            if(!strcmp(ancestor->data, getAt(ancestors, i))) {
                 printf("%s", ancestor->data);
                 return;
             }
