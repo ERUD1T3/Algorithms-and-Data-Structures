@@ -21,7 +21,7 @@ void numberOfAllSubCategories(TTree* taxonomy, char* category); //returns the nu
 void isSuperCategory(TTree* taxonomy, char* category, char* supercategory); //true if supercategory of category
 void isSubCategory(TTree* taxonomy, char* category, char* subcategory); //true if subcategory of category
 void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category2); //prints the closest common super category 
-void processQuery(TTree* taxonomy, TNList* query_list);
+void processQuery(TTree* taxonomy, TNList* query_list); //process queries
 
 
 /**************************************
@@ -74,7 +74,6 @@ void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
     TNode* ancestor = target->parent;
     uint counter = 0;
     while(ancestor != NULL) {
-        //printf("%s", ancestor->data);
         ++counter;
         ancestor = ancestor->parent;
     }
@@ -182,9 +181,5 @@ void processQuery(TTree* taxonomy, TNList* query_list) {
     }
     else printf("Invalid command!\n");
 }
-
-
-
-
 
 #endif //QUERYING_H 
