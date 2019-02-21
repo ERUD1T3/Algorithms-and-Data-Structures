@@ -8,20 +8,20 @@
 
 #define SIZE 32 //size of data stored in each node
 
-typedef unsigned int uint;
-typedef struct tnode TNode; //node alias
+typedef unsigned int uint; //unsigned integer alias
+typedef struct tnode TNode; // node alias
 typedef struct tnlist TNList; // list alias
 
 struct tnode {
-    char data[SIZE]; //data carried by node
-    struct tnode *parent; //pointer to parent node
-    struct tnode *next; //pointer to next
-    struct tnlist* children; //list of children
+    char data[SIZE]; // data carried by node
+    struct tnode *parent; // pointer to parent node
+    struct tnode *next; // pointer to next
+    struct tnlist* children; // list of children
 };
 
 struct tnlist {
-    uint size; //size of the list
-    struct tnode* head; //pointer to parent
+    uint size; // size of the list
+    struct tnode* head; // pointer to parent
 };
 
 
@@ -29,12 +29,12 @@ struct tnlist {
  * METHODS PROTOTYPES
  ***************************************/ 
 
-//NODE METHODS
+// NODE METHODS
 TNode* initTNode(char* data, TNode* parent, TNList* children);
-void destroyTNode(TNode* to_del); //clear memory of Taxonomic node
+void destroyTNode(TNode* to_del); // clear memory of Taxonomic node
 
 //LIST METHODS
-TNList* initTNList(); //initialize a list of TNodes
+TNList* initTNList(); // initialize a list of TNodes
 TNList* parseWords(char* line); //parse the input into TNList
 TNode* traverse(TNList* List,  uint index);  //return the pointer to the node previous to the node at index 
 void destroyTNList(TNList* to_del); //clear memory of Taxonomic node

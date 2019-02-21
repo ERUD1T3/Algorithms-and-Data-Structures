@@ -12,15 +12,15 @@
  * QUERY METHODS PROTOTYPES 
  *************************************/ 
 
-void directSuperCategory(TTree* taxonomy, char* category); //print the direct parent node
-void directSubCategories(TTree* taxonomy, char* category); //prints the direct children list
-void allSuperCategories(TTree* taxonomy, char* category); //prints all the ancestors
-void allSubCategories(TTree* taxonomy, char* category); //prints all the descendants of node
-void numberOfAllSuperCategories(TTree* taxonomy, char* category); //returns the number of all supercategories
-void numberOfAllSubCategories(TTree* taxonomy, char* category); //returns the number of all subcategories
-void isSuperCategory(TTree* taxonomy, char* category, char* supercategory); //true if supercategory of category
-void isSubCategory(TTree* taxonomy, char* category, char* subcategory); //true if subcategory of category
-void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category2); //prints the closest common super category 
+void directSuperCategory(TTree* taxonomy, char* category); // print the direct parent node
+void directSubCategories(TTree* taxonomy, char* category); // prints the direct children list
+void allSuperCategories(TTree* taxonomy, char* category); // prints all the ancestors
+void allSubCategories(TTree* taxonomy, char* category); // prints all the descendants of node
+void numberOfAllSuperCategories(TTree* taxonomy, char* category); // prints the number of all ancestors
+void numberOfAllSubCategories(TTree* taxonomy, char* category); // prints the number of all descendants
+void isSuperCategory(TTree* taxonomy, char* category, char* supercategory); // prints yes if supercategory of category, no otherwise
+void isSubCategory(TTree* taxonomy, char* category, char* subcategory); // prints yes if subcategory of category, no otherwise
+void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category2); // prints the closest common ancestor of both categories
 void processQuery(TTree* taxonomy, TNList* query_list); //process queries
 
 
@@ -31,7 +31,7 @@ void processQuery(TTree* taxonomy, TNList* query_list); //process queries
 
 void directSuperCategory(TTree* taxonomy, char* category) {
     /*
-    *return the data in the parent of the category
+    *prints the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
     printf("%s", target->parent->data);
@@ -39,7 +39,7 @@ void directSuperCategory(TTree* taxonomy, char* category) {
 
 void directSubCategories(TTree* taxonomy, char* category) {
     /*
-    *return the data in the children list
+    *prints the data of all nodes in the children list
     */
     TNode* target = searchNode(taxonomy, category);
     printlist(target->children);
@@ -47,7 +47,7 @@ void directSubCategories(TTree* taxonomy, char* category) {
 
 void allSuperCategories(TTree* taxonomy, char* category) {
     /*
-    *return data in all ancestors
+    *prints data in all ancestors
     */
     TNode* target = searchNode(taxonomy, category);
     TNode* ancestor = target->parent;
@@ -59,16 +59,16 @@ void allSuperCategories(TTree* taxonomy, char* category) {
 
 void allSubCategories(TTree* taxonomy, char* category) {
     /*
-    *return the data in the parent of the category
+    *prints the data in the parent of the category
     */
     TNode* target = searchNode(taxonomy, category);
     preOrder(target, NULL);
 }
 
-//UNDER CONSTRUCTION
+
 void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
     /*
-    *return the data in the parent of the category
+    *prints number of supercategories
     */
     TNode* target = searchNode(taxonomy, category);
     TNode* ancestor = target->parent;
@@ -81,10 +81,10 @@ void numberOfAllSuperCategories(TTree* taxonomy, char* category) {
 
 }
 
-//UNDER CONSTRUCTION
+
 void numberOfAllSubCategories(TTree* taxonomy, char* category) {
     /*
-    *return the data in the parent of the category
+    *prints number of subcategories
     */
     TNode* target = searchNode(taxonomy, category);
     uint counter = 0;
@@ -94,7 +94,7 @@ void numberOfAllSubCategories(TTree* taxonomy, char* category) {
 
 void isSuperCategory(TTree* taxonomy, char* category, char* supercategory) {
     /*
-    *return the data in the parent of the category
+    *prints yes if supercategory of subcategory, no otherwise
     */
     TNode* target = searchNode(taxonomy, category);
     if(!strcmp(target->parent->data, supercategory)) printf("yes");
@@ -103,17 +103,16 @@ void isSuperCategory(TTree* taxonomy, char* category, char* supercategory) {
 
 void isSubCategory(TTree* taxonomy, char* category, char* subcategory) {
     /*
-    *return the data in the parent of the category
+    *prints yes if subcategory of subcategory, no otherwise
     */
     TNode* target = searchNode(taxonomy, category);
     if(preOrderSearch(target, subcategory) != NULL) printf("yes");
     else printf("no");
 }
 
-//UNDER CONSTRUCTION
 void closestCommonSupercategory(TTree* taxonomy, char* category1, char* category2) {
     /*
-    *return the data in the parent of the category
+    *prints closeset common ancestor of category1 and category2
     */
     TNode* target1 = searchNode(taxonomy, category1);
     TNode* target2 = searchNode(taxonomy, category2);

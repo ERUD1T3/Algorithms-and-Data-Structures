@@ -18,19 +18,19 @@ struct ttree {
  * METHODS PROTOTYPES
  ***************************************/ 
 
-TTree* initTTree(); //initialize a Taxonomic tree
-TNList* getChildren(TNode* parent);
-TNode* getParent(TNode* child);
-TNode* getChild(TNList* children,  uint index);
-TNode* searchNode(TTree* taxonomy,  char* data); //search the tree for node containing data
-TNode* preOrderSearch(TNode* root, char* key);
-void destroyTTree(TTree* to_del); //clear memory of Taxonomic tree
-void addChild(TNode* parent,  char* child);
-void insertNode(TTree* tree, TNode* node, TNode* parent); //inserts a new node into tree
-void printTTree(TTree* taxonomy);
-void buildTTree(TTree* taxonomy, TNList* data_list); //insert a new node in Tree
-void insertChild( char* child_data, TNode* parent);
-void preOrder(TNode* root, uint* counter);
+TTree* initTTree(); // initialize a Taxonomic tree
+TNList* getChildren(TNode* parent); // return pointer to the list of children 
+TNode* getParent(TNode* child); // return pointer to parent of child
+TNode* getChild(TNList* children,  uint index); // get a child pointer from its parent list of children
+TNode* searchNode(TTree* taxonomy,  char* data); // search the tree for node containing data
+TNode* preOrderSearch(TNode* root, char* key); // utilized preorder to search a tree for a key value
+void destroyTTree(TTree* to_del); // clear memory of Taxonomic tree
+void addChild(TNode* parent,  char* child); // add child to parent's children list
+void insertNode(TTree* tree, TNode* node, TNode* parent); // inserts a new node into tree
+void printTTree(TTree* taxonomy); // print the tree using preorder
+void buildTTree(TTree* taxonomy, TNList* data_list); // insert a new node in Tree
+void insertChild(char* child_data, TNode* parent); // insert child into its parent list
+void preOrder(TNode* root, uint* counter); //run preorder on the list to either count or print
 void recDestroy(TNode* root); //recursively destroy all nodes in tree
 
 /*******************************************

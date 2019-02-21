@@ -24,28 +24,28 @@ int main(int argc, char** argv)
   FILE* fquery = fopen(argv[2], "r"); // queryfile name passed as second argument
 
 
-  //exits with failure if program fails to open data file
+  // exits with failure if program fails to open data file
   if(fdata == NULL) {
     printf("\nError: failed to open data file.\n");
     exit(EXIT_FAILURE);
   }
 
-  //exits with failure if program fails to open query file
+  // exits with failure if program fails to open query file
   if(fquery == NULL) {
     printf("\nError: failed to open query file.\n");
     exit(EXIT_FAILURE);
   }
 
-  size_t len = 0; //keeps track of the length of the lines
-  char* input_line = NULL;  //the input line charracter array  
+  size_t len = 0; // keeps track of the length of the lines
+  char* input_line = NULL;  // the input line charracter array  
   TTree* taxonomy = initTTree(); // initializing a empty taxonomic tree
 
   // parseWords(input_line)
   while(getline(&input_line, &len, fdata) != EOF) 
     buildTTree(taxonomy, parseWords(input_line));
   
-  // printTTree(taxonomy);
-  // printf("tree size: %d\n", taxonomy->size);
+  // printTTree(taxonomy); // to print tree in preorder
+  // printf("tree size: %d\n", taxonomy->size); //to print tree's size
   // printf("\n");
   
   // Reading query file and executing the queries
