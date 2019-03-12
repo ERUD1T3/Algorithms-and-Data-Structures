@@ -14,10 +14,12 @@ typedef struct bid Bid; // alias to bid structure
 typedef struct heap Heap; // alias to heap
 
 struct bid {
-    uint price;
+    float price;
     uint timestamp; // bid keys
+    uint quantity;
     char customer_name[SIZE]; // bid value
 };
+
 struct heap {
     uint min_price;
     uint size; // total number of nodes in the tree
@@ -29,15 +31,15 @@ struct heap {
  * METHODS
  *************************************/ 
 
-uint getLeftChildIndex(uint parent_index) {
+uint getLeftChildIndex(const uint parent_index) {
     return (2 * parent_index + 1);
 }
 
-uint getRightChildIndex(uint parent_index) {
+uint getRightChildIndex(const uint parent_index) {
     return (2 * parent_index + 2);
 }
 
-uint getParentIndex(uint child_index) {
+uint getParentIndex(const uint child_index) {
     return (child_index - 1)/2;
 }
 
@@ -52,13 +54,13 @@ void Heapify(Heap* pQueue) {
 }
 
 
-Bid* initBid(uint price, uint timestamp, char* cust_name) {
+Bid* initBid(uint price, uint timestamp, uint quantity, char* cust_name) {
     Bid* new_bid = (Bid*)malloc(sizeof(Bid));
 
     strcpy(new_bid->customer_name, cust_name);
     new_bid->price = price;
     new_bid->timestamp = timestamp;
-
+    new_bid->quantity = quantity;
     return new_bid;
 }
 
@@ -80,7 +82,11 @@ Bid* removeMax(Heap* pQueue) { // return and remove entry with the maximum key
 }
 
 Bid* getMax(Heap* pQueue) { // return entry with the maximum key
-    return *(pQueue->arrBids); 
+    if(pQueue->size != 0) return *(pQueue->arrBids); 
+    else {
+        printf("empty Priority Queue! \n");
+        return NULL;
+    }
     // return (pQueue->arrBids)[0];
 }
 

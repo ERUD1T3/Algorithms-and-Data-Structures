@@ -5,52 +5,57 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "TNList.h"
 #include "Heap.h"
 
-EnterBid time name price quantity
-UpdateMinimumAcceptablePrice time price
-SellOneItem time
-DisplayHighestBid time
 
-void processQuery(TTree* taxonomy, TNList* query_list) {
+/*******************************
+ * METHODS
+ ******************************/
+
+void EnterBid(Heap* pQueue, uint time, char* name, float price, uint quantity) {
+
+}
+
+void UpdateMinimumAcceptablePrice(Heap* pQueue, uint time, float price) {
+    pQueue->min_price = price;
+}
+
+void SellOneItem(Heap* pQueue, uint time) {
+
+}
+
+void DisplayHighestBid(Heap* pQueue, uint time) {
+
+}
+
+void processQuery(Heap* pQueue, TNList* query_list) {
     /*
     *   Executes the right query on the Taxonomy tree
     */ 
 
-    if(!strcmp(getAt(query_list, 0), "DirectSupercategory")) {
-        directSuperCategory(taxonomy, getAt(query_list, 1));
+    if(!strcmp(getAt(query_list, 0), "UpdateMinimumAcceptablePrice")) {
+        UpdateMinimumAcceptablePrice(pQueue, 
+            atoi(getAt(query_list, 1)), 
+            atoi(getAt(query_list, 2))
+            );
     }
     else 
-    if(!strcmp(getAt(query_list, 0), "DirectSubcategories")) {
-        directSubCategories(taxonomy, getAt(query_list, 1));
+    if(!strcmp(getAt(query_list, 0), "EnterBid")) {
+        EnterBid(pQueue, 
+            atoi(getAt(query_list, 1)), 
+            getAt(query_list, 2), 
+            atoi(getAt(query_list, 3)), 
+            atoi(getAt(query_list, 4))
+            );
     }
     else 
-    if(!strcmp(getAt(query_list, 0), "AllSupercategories")) {
-        allSuperCategories(taxonomy, getAt(query_list, 1));
+    if(!strcmp(getAt(query_list, 0), "DisplayHighestBid")) {
+        DisplayHighestBid(pQueue, atoi(getAt(query_list, 1)));
     }
     else 
-    if(!strcmp(getAt(query_list, 0), "AllSubcategories")) {
-        allSubCategories(taxonomy, getAt(query_list, 1));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "NumberOfAllSupercategories")) {
-        numberOfAllSuperCategories(taxonomy, getAt(query_list, 1));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "NumberOfAllSubcategories")) {
-        numberOfAllSubCategories(taxonomy, getAt(query_list, 1));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "IsSupercategory")) {
-        isSuperCategory(taxonomy, getAt(query_list, 1), getAt(query_list, 2));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "IsSubcategory")) {
-        isSubCategory(taxonomy, getAt(query_list, 1), getAt(query_list, 2));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "ClosestCommonSupercategory")) {
-        closestCommonSupercategory(taxonomy, getAt(query_list, 1), getAt(query_list, 2));
+    if(!strcmp(getAt(query_list, 0), "SellOneItem")) {
+        SellOneItem(pQueue, atoi(getAt(query_list, 1)));
     }
     else printf("Invalid command!\n");
 }

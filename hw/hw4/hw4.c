@@ -13,7 +13,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Heap.h"
-// #include "Queries.h"
+#include "Queries.h"
 #include "TNList.h"
 
 /*
@@ -32,12 +32,12 @@ int main(int argc, char** argv) {
   // Reading file inputs
   size_t len = 0; // keeps track of the length of the lines
   char* input_line = NULL;  // the input line charracter array  
-  TNList* input = NULL;
+  TNList* cmds = NULL;
  
  
   while(getline(&input_line, &len, fp) != EOF) {
     printf("%s\n", input_line);
-    input = parseWords(input_line);
+    cmds = parseWords(input_line);
   }
 
   Heap* bidQueue = initHeap();
