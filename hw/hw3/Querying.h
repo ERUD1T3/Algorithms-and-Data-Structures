@@ -181,4 +181,4 @@ void processQuery(TTree* taxonomy, TNList* query_list) {
     else printf("Invalid command!\n");
 }
 
-#endif //QUERYING_H 
+#endif //QUERYING_H
