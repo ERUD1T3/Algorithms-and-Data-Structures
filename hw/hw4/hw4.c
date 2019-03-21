@@ -33,15 +33,14 @@ int main(int argc, char** argv) {
   size_t len = 0; // keeps track of the length of the lines
   char* input_line = NULL;  // the input line charracter array  
   TNList* cmds = NULL;
- 
+  Heap* bids = initHeap();
  
   while(getline(&input_line, &len, fp) != EOF) {
-    printf("%s\n", input_line);
+    //printf("%s\n", input_line);
     cmds = parseWords(input_line);
+    processQuery(bids, cmds);
   }
-
-  Heap* bidQueue = initHeap();
-
+  
   fclose(fp);
   return EXIT_SUCCESS;
   
