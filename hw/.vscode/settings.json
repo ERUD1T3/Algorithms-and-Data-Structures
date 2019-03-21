@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "slinkedlist.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "sllist.h": "c"
     }
 }
