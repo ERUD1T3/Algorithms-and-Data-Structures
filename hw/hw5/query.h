@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "SLList.h"
+#include "sllist.h"
 #include "skipList.h"
 
 

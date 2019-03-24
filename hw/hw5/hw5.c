@@ -14,19 +14,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "SLList.h"
+#include "sllist.h"
 #include "skipList.h"
-#include "query.h"
-
-
-int getRandHeight();
-
+// #include "query.h"
 
 
 /*
   Description for each function, parameter, and return value (if any)
  */
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
   /*
     description of declared variables
@@ -50,14 +46,17 @@ int main(int argc, char* argv[])
   SLList* cmds = NULL;
  
   while(getline(&input_line, &len, fp) != EOF) {
-    //printf("%s\n", input_line);
+    // printf("%s\n", input_line);
     cmds = parseWords(input_line);
+    printlist(cmds);
+    printf("\n");
     // processQuery(bids, cmds);
   }
   
   fclose(fp);
   return EXIT_SUCCESS;
 }
+
 
 
 // put(skiplist, ...) 

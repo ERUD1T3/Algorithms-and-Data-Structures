@@ -9,19 +9,19 @@
 #define SIZE 32 //size of data stored in each node
 
 typedef unsigned int uint; //unsigned integer alias
-typedef struct tnode TNode; // node alias
-typedef struct tnlist SLList; // list alias
+typedef struct node Node; // node alias
+typedef struct sllist SLList; // list alias
 
-struct tnode {
-    char data[SIZE]; // data carried by node
-    struct tnode *parent; // pointer to parent node
-    struct tnode *next; // pointer to next
-    struct tnlist* children; // list of children
+struct node {
+    void* data; // data carried by node
+    // struct tnode *parent; // pointer to parent node
+    struct node *next; // pointer to next
+    // struct tnlist* children; // list of children
 };
 
-struct tnlist {
+struct sllist {
     uint size; // size of the list
-    struct tnode* head; // pointer to parent
+    struct node* head; // pointer to parent
 };
 
 
@@ -30,14 +30,14 @@ struct tnlist {
  ***************************************/ 
 
 // NODE METHODS
-TNode* initTNode(char* data, TNode* parent, SLList* children);
-void destroyTNode(TNode* to_del); // clear memory of Taxonomic node
+Node* initNode(char* data);
+void destroyNode(Node* to_del); // clear memory of Taxonomic node
 
 //LIST METHODS
-SLList* initTNList(); // initialize a list of TNodes
+SLList* initList(); // initialize a list of TNodes
 SLList* parseWords(char* line); //parse the input into SLList
-TNode* traverse(SLList* List,  uint index);  //return the pointer to the node previous to the node at index 
-void destroyTNList(SLList* to_del); //clear memory of Taxonomic node
+Node* traverse(SLList* List,  uint index);  //return the pointer to the node previous to the node at index 
+void destroyList(SLList* to_del); //clear memory of Taxonomic node
 void insert(SLList* List, uint index, char* data); //_insert a node with payload data at position index
 void pushfront(SLList* List, char* data); //_insert node at the front of the list
 void pushback(SLList* List, char* data); //_insert node at the end of the list
@@ -49,22 +49,23 @@ char* getAt(SLList* List,  uint index); //get the data at index
 
 
 /****************************************
- * TNode Methods
+ * Node Methods
  ***************************************/ 
 
-TNode* initTNode(char* data, TNode* parent, SLList* children) {
+Node* initNode(char* data) {
     /*
     * Creates a new node for the tree
     */ 
-    TNode* new_node = (TNode*)malloc(sizeof(TNode));
-    strcpy(new_node->data, data);
-    new_node->parent = parent;
-    new_node->children = children;
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    new_node->data = malloc(SIZE*sizeof(char));
+    strcpy((char*)(new_node->data), data);
+    // new_node->parent = parent;
+    // new_node->children = children;
     new_node->next = NULL;
     return new_node;
 }
 
-void destroyTNode(TNode* to_del) {
+void destroyNode(Node* to_del) {
     /*
     * Destroy to_del node 
     */ 
@@ -77,10 +78,10 @@ void destroyTNode(TNode* to_del) {
  ******************************************/
 
 char* getAt(SLList* List,  uint index) {
-    return (traverse(List, index)->data);
+    return ((char*)(traverse(List, index)->data));
 }
 
-SLList* initTNList(void) {
+SLList* initList(void) {
     /*
     *   initialize size to 0 and head to NULL
     */
@@ -90,7 +91,7 @@ SLList* initTNList(void) {
    return List;
 }
 
-void destroyTNList(SLList* List) {
+void destroyList(SLList* List) {
     while(List->size != 0) popback(List);
     free(List);
 }
@@ -104,17 +105,17 @@ void printlist(SLList* List) {
         return;
     }
 
-    TNode* tmp = List->head;
+    Node* tmp = List->head;
 
     if(List->size != 0) {
         while(tmp != NULL) {
-            printf("%s ", tmp->data);
+            printf("%s ", (char*)(tmp->data));
             tmp = tmp->next;
         }
     }
 }
 
-TNode* traverse(SLList* List,  uint index) {
+Node* traverse(SLList* List,  uint index) {
     /*
     * give an index N, _traverse() _traverse the list until N and return pointer to N-1
     * O(n)
@@ -132,7 +133,7 @@ TNode* traverse(SLList* List,  uint index) {
     }
 
     // case 3: index present
-    TNode* tmp = List->head; 
+    Node* tmp = List->head; 
     for(uint i = 0; i < index; ++i) tmp = tmp->next; 
 
     return tmp;
@@ -144,8 +145,8 @@ void insert(SLList* List,  uint index, char* data) {
     * O(n)
     */
 
-    TNode* new_node = (TNode*)malloc(sizeof(TNode));
-    strcpy(new_node->data,data);
+    Node* new_node = initNode(data);
+    // strcpy((char*)(new_node->data),data);
 
     
     if(List->size == 0) { //case 1: empty list
@@ -158,7 +159,7 @@ void insert(SLList* List,  uint index, char* data) {
         List->head = new_node;
     } 
     else { //case 3: Non empty list with _insert at middle
-        TNode* prev = traverse(List, index);
+        Node* prev = traverse(List, index);
         new_node->next = prev->next;
         prev->next = new_node;
     }
@@ -178,16 +179,16 @@ void pushback(SLList* List, char* data) {
     * _insert node at the end of the list
     */
     if(List->size == 0) {
-        TNode* new_node = (TNode*)malloc(sizeof(TNode));
-        strcpy(new_node->data, data);
+        Node* new_node = initNode(data);
+        // strcpy(new_node->data, data);
         new_node->next = NULL;
         List->head = new_node;
         ++List->size;
     }
     else 
     if(List->size == 1) { //edge case for single node list
-        TNode* new_node = (TNode*)malloc(sizeof(TNode));
-        strcpy(new_node->data, data);
+        Node* new_node = initNode(data);
+        // strcpy(new_node->data, data);
         new_node->next = List->head->next;
         List->head->next = new_node;
         ++List->size;
@@ -212,7 +213,7 @@ char* suppress(SLList* List, uint index) {
         return NULL;
     }
 
-    TNode* to_del;
+    Node* to_del;
     char* tmp = (char*)malloc(SIZE*sizeof(char));
     
     if(index == 0) { //case 3: deleting head
@@ -221,13 +222,13 @@ char* suppress(SLList* List, uint index) {
 
     } 
     else {  //case 4: deleting any node that is not head
-        TNode* prev = traverse(List, index - 1);
+        Node* prev = traverse(List, index - 1);
         to_del = prev->next;
         prev->next = to_del->next;
 
     }
 
-    strcpy(tmp, to_del->data);
+    strcpy(tmp, (char*)(to_del->data));
     free(to_del);
     --List->size;
     return tmp;
@@ -251,7 +252,7 @@ SLList* parseWords(char* line) {
     /*
     * Parses the input line for relevant commands
     */ 
-   SLList* tmp = initTNList(); //command created with be used by then freed by parseCmd()
+   SLList* tmp = initList(); //command created with be used by then freed by parseCmd()
 
     char* word_token;
     char* delim = " \r\n";
