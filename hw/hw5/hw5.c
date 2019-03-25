@@ -16,7 +16,7 @@
 #include <stdbool.h>
 #include "sllist.h"
 #include "skipList.h"
-// #include "query.h"
+#include "query.h"
 
 
 /*
@@ -44,22 +44,19 @@ int main(int argc, char** argv)
   size_t len = 0; // keeps track of the length of the lines
   char* input_line = NULL;  // the input line charracter array  
   SLList* cmds = NULL;
- 
+  SList* logs = initSList();
+
   while(getline(&input_line, &len, fp) != EOF) {
     // printf("%s\n", input_line);
     cmds = parseWords(input_line);
     printlist(cmds);
     printf("\n");
-    // processQuery(bids, cmds);
+    printf("\n about to process queries\n");
+    processQuery(logs, cmds);
+    printf("\nfinished processing queries\n");
   }
   
+  // destroySList(logs);
   fclose(fp);
   return EXIT_SUCCESS;
 }
-
-
-
-// put(skiplist, ...) 
-// uses getRandHeight()
-
-

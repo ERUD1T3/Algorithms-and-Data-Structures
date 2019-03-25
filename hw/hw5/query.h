@@ -14,19 +14,46 @@
  ******************************/
 
 void processQuery(SList* logs, SLList* query_list);
-void DisplayActivity(SList* logs,uint time);
-void AddActivity(SList* logs,uint time, char* activity);
-void DeleteActivity(SList* logs,uint time);
-void DisplayActivitiesBetweenTimes(SList* logs,uint startTime, uint endTime);
-void DisplayActivitiesFromStartTime(SList* logs,uint startTime);
-void DisplayActivitiesToEndTime(SList* logs,uint endTime);
+void DisplayActivity(SList* logs, uint time);
+void AddActivity(SList* logs, uint time, char* activity);
 void DisplayAllActivities(SList* logs);
 void PrintSkipList(SList* logs);
+void DeleteActivity(SList* logs, uint time);
+void DisplayActivitiesBetweenTimes(SList* logs, uint startTime, uint endTime);
+void DisplayActivitiesFromStartTime(SList* logs, uint startTime);
+void DisplayActivitiesToEndTime(SList* logs, uint endTime);
+
 
 /************************************************
  * METHODS IMPLEMENTATION
  ***********************************************/ 
 
+/* Display an activity given a certain time */
+void DisplayActivity(SList* logs, uint time) {
+    printf("DisplayActivity %d %s", time, getEvent(logs, time));
+    printf("\n");
+}
+
+/* add an activity to logs */
+void AddActivity(SList* logs, uint time, char* activity) {
+    putEvent(logs, time, activity);
+    printf("\n");
+}
+
+void DisplayAllActivities(SList* logs) {
+    printf("DisplayAllActivities ");
+    displayLevel(logs->floor_head);
+    printf("\n");
+}
+
+void PrintSkipList(SList* logs) {
+    printf("PrintSkipList");
+    printList(logs);
+    printf("\n");
+}
+
+
+// MOSTLY DONE 
 void processQuery(SList* logs, SLList* query_list) {
     /*
     *   Executes the right query on the Taxonomy tree
@@ -64,6 +91,8 @@ void processQuery(SList* logs, SLList* query_list) {
         PrintSkipList(logs);
     }
     else printf("Invalid command!\n");
+
+    // destroyList(query_list);
 }
 
 #endif // QUERY_H
