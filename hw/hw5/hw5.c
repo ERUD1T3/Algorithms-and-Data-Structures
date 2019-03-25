@@ -22,16 +22,7 @@
 /*
   Description for each function, parameter, and return value (if any)
  */
-int main(int argc, char** argv)
-{
-  /*
-    description of declared variables
-   */
-
-
-  /*
-    description for each "block" (about 5 lines of instructions)
-   */
+int main(int argc, char** argv) {
   
   FILE* fp = fopen(argv[1], "r"); // pointer the input data and query files
   
@@ -51,7 +42,7 @@ int main(int argc, char** argv)
     cmds = parseWords(input_line);
     printlist(cmds);
     printf("\n");
-    printf("\n about to process queries\n");
+    printf("\nabout to process queries\n");
     processQuery(logs, cmds);
     printf("\nfinished processing queries\n");
   }

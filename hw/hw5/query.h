@@ -28,6 +28,29 @@ void DisplayActivitiesToEndTime(SList* logs, uint endTime);
  * METHODS IMPLEMENTATION
  ***********************************************/ 
 
+void DisplayActivitiesBetweenTimes(SList* logs, uint startTime, uint endTime) {
+
+}
+
+void DisplayActivitiesFromStartTime(SList* logs, uint startTime) {
+
+}
+
+void DisplayActivitiesToEndTime(SList* logs, uint endTime) {
+
+}
+
+
+
+// MOSTLY DONE 
+
+/* Delete an entry from the logs */
+void DeleteActivity(SList* logs, uint time) {
+    printf("DeleteActivity %d ", time);
+    if(removeEvent(logs, time) == NULL) printf("noTimeError\n");
+    printf("\n");
+}
+
 /* Display an activity given a certain time */
 void DisplayActivity(SList* logs, uint time) {
     printf("DisplayActivity %d %s", time, getEvent(logs, time));
@@ -40,12 +63,14 @@ void AddActivity(SList* logs, uint time, char* activity) {
     printf("\n");
 }
 
+/* display all the entries in floor level */
 void DisplayAllActivities(SList* logs) {
     printf("DisplayAllActivities ");
     displayLevel(logs->floor_head);
     printf("\n");
 }
 
+/* display all the levels with all their entries */
 void PrintSkipList(SList* logs) {
     printf("PrintSkipList");
     printList(logs);
@@ -53,7 +78,6 @@ void PrintSkipList(SList* logs) {
 }
 
 
-// MOSTLY DONE 
 void processQuery(SList* logs, SLList* query_list) {
     /*
     *   Executes the right query on the Taxonomy tree
