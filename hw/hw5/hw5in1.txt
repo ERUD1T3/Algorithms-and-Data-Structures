@@ -5,7 +5,7 @@ AddActivity 1031 deleteFileMickey
 AddActivity 1032 logoutMickey
 AddActivity 1046 logoutMinnie
 PrintSkipList
-DisplayActivity 1006 loginMinnie
+DisplayActivity 1006
 DisplayActivitiesBetweenTimes 1000 1030
 DisplayActivitiesFromStartTime 1024
 AddActivity 1025 openPasswordFile
@@ -18,5 +18,5 @@ DeleteActivity 1016
 DeleteActivity 1046
 DeleteActivity 1020
 DisplayAllActivities
-DisplayActivitiesBetweenTime 1000 1020
+DisplayActivitiesBetweenTimes 1000 1020
 PrintSkipList

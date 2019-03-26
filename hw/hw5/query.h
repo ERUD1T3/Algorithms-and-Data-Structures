@@ -26,28 +26,34 @@ void DisplayActivitiesToEndTime(SList* logs, uint endTime);
 
 /************************************************
  * METHODS IMPLEMENTATION
- ***********************************************/ 
+ ***********************************************/
 
+
+/* prints all entries between start and end times */
 void DisplayActivitiesBetweenTimes(SList* logs, uint startTime, uint endTime) {
-
+    printf("DisplayActivitiesBetweenTimes %d %d ", startTime, endTime);
+    displayLevel(floorNode(ceilingEntry(logs, startTime)), floorNode(floorEntry(logs, endTime)));
+    printf("\n");
 }
 
+/* prints all entries starting from startTime */
 void DisplayActivitiesFromStartTime(SList* logs, uint startTime) {
-
+    printf("DisplayActivitiesFromStartTime %d ", startTime);
+    displayLevel(floorNode(ceilingEntry(logs, startTime)), NULL);
+    printf("\n");
 }
 
+/* prints all entries from floor head to endTime */
 void DisplayActivitiesToEndTime(SList* logs, uint endTime) {
-
+    printf("DisplayActivitiesToEndTime %d ", endTime);
+    displayLevel(logs->floor_head, floorNode(floorEntry(logs, endTime)));
+    printf("\n");
 }
-
-
-
-// MOSTLY DONE 
 
 /* Delete an entry from the logs */
 void DeleteActivity(SList* logs, uint time) {
     printf("DeleteActivity %d ", time);
-    if(removeEvent(logs, time) == NULL) printf("noTimeError\n");
+    if(removeEvent(logs, time) == NULL) printf("noTimeError");
     printf("\n");
 }
 
@@ -60,13 +66,13 @@ void DisplayActivity(SList* logs, uint time) {
 /* add an activity to logs */
 void AddActivity(SList* logs, uint time, char* activity) {
     putEvent(logs, time, activity);
-    printf("\n");
+    printf("AddActivity %d %s\n", time, activity);
 }
 
 /* display all the entries in floor level */
 void DisplayAllActivities(SList* logs) {
     printf("DisplayAllActivities ");
-    displayLevel(logs->floor_head);
+    displayLevel(logs->floor_head, NULL);
     printf("\n");
 }
 
@@ -74,7 +80,7 @@ void DisplayAllActivities(SList* logs) {
 void PrintSkipList(SList* logs) {
     printf("PrintSkipList");
     printList(logs);
-    printf("\n");
+    // printf("\n");
 }
 
 

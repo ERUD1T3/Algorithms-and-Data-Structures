@@ -7,7 +7,6 @@
   Description: skiplist to log and manage user activities
 
 
-
  */
 
 #include <stdio.h>
@@ -19,9 +18,6 @@
 #include "query.h"
 
 
-/*
-  Description for each function, parameter, and return value (if any)
- */
 int main(int argc, char** argv) {
   
   FILE* fp = fopen(argv[1], "r"); // pointer the input data and query files
@@ -38,13 +34,8 @@ int main(int argc, char** argv) {
   SList* logs = initSList();
 
   while(getline(&input_line, &len, fp) != EOF) {
-    // printf("%s\n", input_line);
     cmds = parseWords(input_line);
-    printlist(cmds);
-    printf("\n");
-    printf("\nabout to process queries\n");
     processQuery(logs, cmds);
-    printf("\nfinished processing queries\n");
   }
   
   // destroySList(logs);

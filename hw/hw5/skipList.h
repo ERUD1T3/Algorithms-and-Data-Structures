@@ -11,8 +11,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-// #define PLUS_INF NULL
-// #define MINUS_INF NULL
 #define INF NULL // only infinities have null entries
 #define SIZE 32
 #define MAX_LEVEL 4
@@ -20,7 +18,6 @@
 typedef unsigned int uint;
 typedef struct entry Entry;
 typedef struct skip_node SNode;
-// typedef struct level_list LList;
 typedef struct skip_list SList;
 
 struct entry {
@@ -33,11 +30,6 @@ struct skip_node {
     Entry* entry; // container for the entry entry
     SNode *prev, *next, *below, *above;
 };
-
-// struct level_list {
-//     uint size, level;
-//     SNode *head, *tail;
-// };
 
 struct skip_list {
     uint size, height; // size represent total number of nodes, height represent number of levels
@@ -54,8 +46,9 @@ SNode* initSNode(Entry* act_log, uint ins_level, SNode* next, SNode* prev, SNode
 void addEmptyLevel(SList* skip_list);
 void insertInLevel(SNode* head, SNode* to_insert); /* Insert key-value pair in ordered list */
 void deleteDown(SNode* top_occ); /* deletes nodes down, starting at the top occurence of the entry */
-void displayLevel(SNode* head); /* display all nodes in level */
+void displayLevel(SNode* head, SNode* tail); /* display all nodes in level */
 SList* initSList();
+SNode* floorNode(SNode* top);
 void printList(SList* skip_list); 
 char* getEvent(SList* skip_list, uint key); // if key exists, return value associated with key; otherwise, return NULL
 SNode* findEvent(SList* skip_list, uint key);
@@ -63,43 +56,82 @@ char* putEvent(SList* skip_list, uint key, char* value); // if key doesn’t exi
 char* removeEvent(SList* skip_list, uint key); // if key exists, remove entry and return its value; otherwise, return NULL
 SNode* ceilingEntry(SList* skip_list, uint key); // return the entry with the smallest key greater than or equal to key; return NULL if no such entry exists
 SNode* floorEntry(SList* skip_list, uint key); // return the entry with the largest key less than or equal to key; return NULL if no such entry exists
-SList* subMap(SList* skip_list, uint key1, uint key2); // return all entries with key such that key1 ≤ key ≤ key2
 void destroySList(SList* skip_list);
 
 /***********************************************
  * METHODS IMPLEMENTATION
  **********************************************/
 
-void destroySList(SList* skip_list) {
+// void destroySList(SList* skip_list) {
+//     for(SNode* to_del)
+// }
 
-
-}
 
 /* return entry with smallest key >= key */
 SNode* ceilingEntry(SList* skip_list, uint key) {
-    if(skip_list->size != 0) {
+        if(skip_list->size != 0) {
         SNode* tmp = skip_list->ceiling_head;
-        while(tmp != skip_list->floor_tail) { 
-            if(tmp->next->entry == NULL) {
+        while(tmp != NULL && tmp != skip_list->floor_tail) { 
+            if(tmp->entry != NULL) {
+                if(tmp->entry->time == key) return tmp;
+                else 
+                if(tmp->level == 0 && (tmp->entry->time > key)) {
+                    return tmp;
+                } 
+                else
+                if(tmp->entry->time > key) {
+                    tmp = tmp->prev; //go back one step
+                    tmp = tmp->below; // going down the list
+                } 
+                else  tmp = tmp->next; // move forward
+            } 
+            else { // tmp->entry == NULL
+
+                if(tmp->prev != NULL) tmp = tmp->prev; //go back one step
                 tmp = tmp->below; // going down the list
-            } else 
-            if(tmp->next->entry->time > key) {
-                tmp = tmp->below; // going down the list
-            } else 
-            if(tmp->next->entry->time <= key) {
-                tmp = tmp->next;
-            } else 
-            if(tmp->next->entry->time == key) {
-                return tmp->next;
-            } else {
-            }
+            }  
+            if(tmp != NULL) tmp = tmp->next;
         }
     }
     return NULL; //key wasn't found
 }
 
+/* return entry with largest key <= key */
+SNode* floorEntry(SList* skip_list, uint key) {
+    if(skip_list->size != 0) {
+        SNode* tmp = skip_list->ceiling_head;
+        while(tmp != NULL && tmp != skip_list->floor_tail) { 
+            if(tmp->entry != NULL) {
+                if(tmp->entry->time == key) return tmp;
+                else 
+                if(tmp->level == 0 && (tmp->entry->time > key)) {
+                    return tmp->prev;
+                } 
+                else 
+                if(tmp->entry->time > key) {
+                    tmp = tmp->prev; //go back one step
+                    tmp = tmp->below; // going down the list
+                } 
+                else  tmp = tmp->next; // move forward
+            } 
+            else { // tmp->entry == NULL
 
-// MOSTLY DONE
+                if(tmp->prev != NULL) tmp = tmp->prev; //go back one step
+                tmp = tmp->below; // going down the list
+            }  
+            if(tmp != NULL) tmp = tmp->next;
+        }
+    }
+    return NULL; //key wasn't found
+}
+
+/* returns the lowest level node */
+SNode* floorNode(SNode* top) {
+    if(top == NULL) return NULL;
+    SNode* curr = NULL;
+    for(curr = top; curr->below != NULL; curr = curr->below);
+    return curr;
+}
 
 /* deletes nodes down, starting at the top occurence of the entry */
 void deleteDown(SNode* top_occ) {
@@ -127,15 +159,34 @@ char* removeEvent(SList* skip_list, uint key) {
 
 
 /* display all nodes in level */
-void displayLevel(SNode* head) {
+void displayLevel(SNode* head, SNode* tail) {
+    if(head == NULL) {
+        printf("Nothing to display\n");
+        return;
+    }
+
+    // if(head == tail) {
+    //     printf("none");
+    //     return;
+    // }
     if(head->next->entry == NULL) {
         printf("Empty");
         return;
     }
-    for(SNode* node = head->next; node->entry != NULL; node = node->next) {
-        printf("%d:%s ", node->entry->time, node->entry->activity);
+
+    if(tail != NULL) { // shifting the tail twice to the right to print
+        for(SNode* node = head->next; node != tail->next; node = node->next) {
+            if(node->entry != NULL) printf("%d:%s ", node->entry->time, node->entry->activity);
+        }
+    } 
+    else {
+        for(SNode* node = head->next; node->next != tail; node = node->next) {
+            printf("%d:%s ", node->entry->time, node->entry->activity);
+        }
     }
 }
+
+
 
 /* insert an SNode into a level of the skip_list */
 void insertInLevel(SNode* head,  SNode* to_insert) {
@@ -189,6 +240,10 @@ char* putEvent(SList* skip_list, uint key, char* value) {
         return NULL;
     }
     else { // overwriting previous entry
+        if(!strcmp(target->entry->activity, value)) {
+            printf("existingTimeError\n");
+            return NULL;
+        }
         char* old_val = (char*)malloc(SIZE*sizeof(char));
         strcpy(old_val, target->entry->activity);
         strcpy(target->entry->activity, value);
@@ -199,7 +254,9 @@ char* putEvent(SList* skip_list, uint key, char* value) {
 
 /* returns the pointer to the node with key */
 char* getEvent(SList* skip_list, uint key) {
-    return findEvent(skip_list, key)->entry->activity;
+    SNode* target = findEvent(skip_list, key);
+    if(target != NULL) return target->entry->activity;
+    else return NULL;
 }
 
 /* finds an event in a skip list */
@@ -208,7 +265,7 @@ SNode* findEvent(SList* skip_list, uint key) {
         SNode* tmp = skip_list->ceiling_head;
         while(tmp != NULL && tmp != skip_list->floor_tail) { 
             if(tmp->entry != NULL) {
-                if(tmp->entry->time == key) return tmp->next;
+                if(tmp->entry->time == key) return tmp;
                 else 
                 if(tmp->entry->time > key) {
                     tmp = tmp->prev; //go back one step
@@ -221,6 +278,7 @@ SNode* findEvent(SList* skip_list, uint key) {
                 if(tmp->prev != NULL) tmp = tmp->prev; //go back one step
                 tmp = tmp->below; // going down the list
             }  
+            if(tmp != NULL) tmp = tmp->next;
         }
     }
     return NULL; //key wasn't found
@@ -243,7 +301,7 @@ void printList(SList* skip_list) {
             // for(SNode* node = level_head->next; node->entry != NULL; node = node->next) {
             //     printf("%d:%s ", node->entry->time, node->entry->activity);
             // }
-        displayLevel(level_head);
+        displayLevel(level_head, NULL);
         printf("\n");
     }
 }
@@ -317,8 +375,5 @@ int getRandHeight() {
 
   return height[count++ % 31];
 }
-
-
-
 
 #endif // SKIPLIST_H
