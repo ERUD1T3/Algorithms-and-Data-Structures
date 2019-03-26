@@ -64,9 +64,23 @@ int getRandHeight(); //pseudo randomly assign level for insertion
  * METHODS IMPLEMENTATION
  **********************************************/
 
-// void destroySList(SList* skip_list) {
-//     for(SNode* to_del)
-// }
+
+/* deletes all the node in the list and free their pointers */
+void destroySList(SList* skip_list) {
+    
+    for(SNode* to_del = skip_list->floor_head, *next = NULL; to_del != NULL; to_del = next) {
+        next = to_del->next;
+        for(SNode* level_inst = to_del, *above = NULL; level_inst != NULL; level_inst = above) {
+            above = to_del->above;
+            if(level_inst->entry != NULL) free(level_inst->entry->activity); // clear the activity array
+            free(level_inst->entry); // clear the entry
+            free(level_inst); // clear the node
+        }
+    }
+    
+
+    free(skip_list); // free the pointer to the list
+}
 
 
 /* return entry with smallest key >= key */
@@ -299,7 +313,6 @@ void printList(SList* skip_list) {
 
 /* add an empty level to the list */
 void addEmptyLevel(SList* skip_list) {
-    
     ++skip_list->height;
     skip_list->ceiling_head = initSNode(NULL, skip_list->height, NULL, NULL, NULL, skip_list->ceiling_head);
     skip_list->ceiling_tail = initSNode(NULL, skip_list->height, NULL, NULL, NULL, skip_list->ceiling_tail);

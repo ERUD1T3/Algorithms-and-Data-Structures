@@ -66,7 +66,8 @@ void DeleteActivity(SList* logs, uint time) {
 
 /* Display an activity given a certain time */
 void DisplayActivity(SList* logs, uint time) {
-    printf("DisplayActivity %d %s", time, getEvent(logs, time));
+    char* activity = getEvent(logs, time);
+    printf("DisplayActivity %d %s", time, (activity == NULL)?"None":activity);
     printf("\n");
 }
 
