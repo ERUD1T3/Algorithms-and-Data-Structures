@@ -40,23 +40,24 @@ struct skip_list {
 /*************************************************
  * METHODS PROTOTYPES
  ***********************************************/
-int getRandHeight(); //pseudo randomly assign level for insertion
+
 Entry* initEntry(uint time, char* activity);
+SList* initSList();
 SNode* initSNode(Entry* act_log, uint ins_level, SNode* next, SNode* prev, SNode* above, SNode* below);
+SNode* floorNode(SNode* top);
+SNode* ceilingEntry(SList* skip_list, uint key); // return the entry with the smallest key greater than or equal to key; return NULL if no such entry exists
+SNode* floorEntry(SList* skip_list, uint key); // return the entry with the largest key less than or equal to key; return NULL if no such entry exists
+SNode* findEvent(SList* skip_list, uint key);
 void addEmptyLevel(SList* skip_list);
 void insertInLevel(SNode* head, SNode* to_insert); /* Insert key-value pair in ordered list */
 void deleteDown(SNode* top_occ); /* deletes nodes down, starting at the top occurence of the entry */
 void displayLevel(SNode* head, SNode* tail); /* display all nodes in level */
-SList* initSList();
-SNode* floorNode(SNode* top);
+void destroySList(SList* skip_list); 
 void printList(SList* skip_list); 
 char* getEvent(SList* skip_list, uint key); // if key exists, return value associated with key; otherwise, return NULL
-SNode* findEvent(SList* skip_list, uint key);
 char* putEvent(SList* skip_list, uint key, char* value); // if key doesn’t exist, add entry and return NULL; otherwise, replace value and return the old value
 char* removeEvent(SList* skip_list, uint key); // if key exists, remove entry and return its value; otherwise, return NULL
-SNode* ceilingEntry(SList* skip_list, uint key); // return the entry with the smallest key greater than or equal to key; return NULL if no such entry exists
-SNode* floorEntry(SList* skip_list, uint key); // return the entry with the largest key less than or equal to key; return NULL if no such entry exists
-void destroySList(SList* skip_list);
+int getRandHeight(); //pseudo randomly assign level for insertion
 
 /***********************************************
  * METHODS IMPLEMENTATION
@@ -76,14 +77,14 @@ SNode* ceilingEntry(SList* skip_list, uint key) {
                 if(tmp->entry->time == key) return tmp;
                 else 
                 if(tmp->level == 0 && (tmp->entry->time > key)) {
-                    return tmp;
+                    return tmp->prev;
                 } 
                 else
                 if(tmp->entry->time > key) {
                     tmp = tmp->prev; //go back one step
                     tmp = tmp->below; // going down the list
                 } 
-                else  tmp = tmp->next; // move forward
+                // else  tmp = tmp->next; // move forward
             } 
             else { // tmp->entry == NULL
 
@@ -112,7 +113,7 @@ SNode* floorEntry(SList* skip_list, uint key) {
                     tmp = tmp->prev; //go back one step
                     tmp = tmp->below; // going down the list
                 } 
-                else  tmp = tmp->next; // move forward
+                // else  tmp = tmp->next; // move forward
             } 
             else { // tmp->entry == NULL
 
@@ -165,10 +166,11 @@ void displayLevel(SNode* head, SNode* tail) {
         return;
     }
 
-    // if(head == tail) {
-    //     printf("none");
-    //     return;
-    // }
+    if(head == tail) {
+        printf("none");
+        return;
+    }
+
     if(head->next->entry == NULL) {
         printf("Empty");
         return;
@@ -211,17 +213,13 @@ void insertInLevel(SNode* head,  SNode* to_insert) {
 
 /* Insert new entry into the skip list */
 char* putEvent(SList* skip_list, uint key, char* value) {
-
-    uint insert_level = getRandHeight(); // implicit conversion from int to unsigned int
-
-    while(insert_level >= skip_list->height) { // inserting toward a height larger than prev height
-        addEmptyLevel(skip_list); // add a new layer
-    }
     
     SNode* target = findEvent(skip_list, key);
     // Entry* new_entry = ;
 
     if(target == NULL) { // inserting new node
+        uint insert_level = getRandHeight(); // implicit conversion from int to unsigned int
+        while(insert_level >= skip_list->height) addEmptyLevel(skip_list); // add a new layer
         Entry* new_entry = initEntry(key, value);
         SNode* to_insert[insert_level + 1];
 
@@ -241,7 +239,7 @@ char* putEvent(SList* skip_list, uint key, char* value) {
     }
     else { // overwriting previous entry
         if(!strcmp(target->entry->activity, value)) {
-            printf("existingTimeError\n");
+            printf(" existingTimeError");
             return NULL;
         }
         char* old_val = (char*)malloc(SIZE*sizeof(char));
@@ -271,7 +269,7 @@ SNode* findEvent(SList* skip_list, uint key) {
                     tmp = tmp->prev; //go back one step
                     tmp = tmp->below; // going down the list
                 } 
-                else  tmp = tmp->next; // move forward
+                // else  tmp = tmp->next; // move forward
             } 
             else { // tmp->entry == NULL
 

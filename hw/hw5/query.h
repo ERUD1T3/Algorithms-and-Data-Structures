@@ -65,8 +65,9 @@ void DisplayActivity(SList* logs, uint time) {
 
 /* add an activity to logs */
 void AddActivity(SList* logs, uint time, char* activity) {
+    printf("AddActivity %d %s", time, activity);
     putEvent(logs, time, activity);
-    printf("AddActivity %d %s\n", time, activity);
+    printf("\n");
 }
 
 /* display all the entries in floor level */
