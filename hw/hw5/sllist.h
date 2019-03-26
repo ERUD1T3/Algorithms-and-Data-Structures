@@ -250,4 +250,4 @@ SLList* parseWords(char* line) {
 } 
 
 
-#endif //TNLIST_H
+#endif //SLLIST_H
