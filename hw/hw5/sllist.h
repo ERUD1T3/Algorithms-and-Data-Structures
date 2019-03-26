@@ -59,61 +59,58 @@ char* getAt(SLList* List,  uint index); //get the data at index
  * Node Methods
  ***************************************/ 
 
+
+/* Creates a new node for the tree */
 Node* initNode(char* data) {
-    /*
-    * Creates a new node for the tree
-    */ 
     Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->data = malloc(SIZE*sizeof(char));
     strcpy((char*)(new_node->data), data);
-    // new_node->parent = parent;
-    // new_node->children = children;
     new_node->next = NULL;
     return new_node;
 }
 
+/* Destroy to_del node */ 
 void destroyNode(Node* to_del) {
-    /*
-    * Destroy to_del node 
-    */ 
    free(to_del);
 }
+
+
 
 
 /*******************************************
  * SLList Methods
  ******************************************/
 
+
+/* get data at index */
 char* getAt(SLList* List,  uint index) {
     return ((char*)(traverse(List, index)->data));
 }
 
+
+/* initialize size to 0 and head to NULL */
 SLList* initList(void) {
-    /*
-    *   initialize size to 0 and head to NULL
-    */
    SLList* List = (SLList*)malloc(sizeof(SLList));
    List->size = 0;
    List->head = NULL;
    return List;
 }
 
+/* clear all nodes in the list then the list itself */
 void destroyList(SLList* List) {
     while(List->size != 0) popback(List);
     free(List);
 }
 
+
+/* print all elements in the list */
 void printlist(SLList* List) {
-    /*
-    * print all elements in the list
-    */
     if(List == NULL || List->size == 0 ) {
         printf("empty list\n");
         return;
     }
 
     Node* tmp = List->head;
-
     if(List->size != 0) {
         while(tmp != NULL) {
             printf("%s ", (char*)(tmp->data));
@@ -122,12 +119,8 @@ void printlist(SLList* List) {
     }
 }
 
+/* give an index N, traverse() traverse the list until N and return pointer to N-1 */
 Node* traverse(SLList* List,  uint index) {
-    /*
-    * give an index N, _traverse() _traverse the list until N and return pointer to N-1
-    * O(n)
-    */
-
     // case 1: empty list
     if(List->size == 0) {
         printf("empty list!\n"); 
@@ -146,16 +139,9 @@ Node* traverse(SLList* List,  uint index) {
     return tmp;
 }
 
+/* insert a node with data at index */
 void insert(SLList* List,  uint index, char* data) {
-    /*
-    * _insert a node with data at index
-    * O(n)
-    */
-
     Node* new_node = initNode(data);
-    // strcpy((char*)(new_node->data),data);
-
-    
     if(List->size == 0) { //case 1: empty list
         List->head = new_node;
         new_node->next = NULL;
@@ -174,20 +160,16 @@ void insert(SLList* List,  uint index, char* data) {
     ++List->size;
 }
 
+/* insert node at the front of the list */
 void pushfront(SLList* List, char* data) {
-    /*
-    * _insert node at the front of the list
-    */
    insert(List, 0, data);
 } 
 
+
+/* insert node at the end of the list */
 void pushback(SLList* List, char* data) {
-    /*
-    * _insert node at the end of the list
-    */
     if(List->size == 0) {
         Node* new_node = initNode(data);
-        // strcpy(new_node->data, data);
         new_node->next = NULL;
         List->head = new_node;
         ++List->size;
@@ -195,7 +177,6 @@ void pushback(SLList* List, char* data) {
     else 
     if(List->size == 1) { //edge case for single node list
         Node* new_node = initNode(data);
-        // strcpy(new_node->data, data);
         new_node->next = List->head->next;
         List->head->next = new_node;
         ++List->size;
@@ -203,12 +184,9 @@ void pushback(SLList* List, char* data) {
     } else insert(List, List->size - 1, data);
 }  
 
-char* suppress(SLList* List, uint index) {
-    /*
-    * _suppress() deletes node at index
-    * O(n)
-    */ 
 
+/* suppress() deletes node at index */ 
+char* suppress(SLList* List, uint index) {
     //case 1: empty list
     if(List->size == 0) {
         printf("empty list!\n");
@@ -241,26 +219,21 @@ char* suppress(SLList* List, uint index) {
     return tmp;
 }
 
+/* delete node at the back of the list */
 char* popfront(SLList* List) {
-    /*
-    * delete node at the back of the list
-    */
     return suppress(List,0);
 }  
 
+
+/* delete node at the front of the list */
 char* popback(SLList* List) {
-    /*
-    * delete node at the front of the list
-    */
     return suppress(List, List->size - 1);
 }  
 
-SLList* parseWords(char* line) {
-    /*
-    * Parses the input line for relevant commands
-    */ 
-   SLList* tmp = initList(); //command created with be used by then freed by parseCmd()
 
+/* Parses the input line for relevant commands */ 
+SLList* parseWords(char* line) {
+    SLList* tmp = initList(); //command created with be used by then freed by parseCmd()
     char* word_token;
     char* delim = " \r\n";
 

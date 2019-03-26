@@ -92,46 +92,18 @@ void PrintSkipList(SList* logs) {
     // printf("\n");
 }
 
-
+/* Executes the right query on the Taxonomy tree */ 
 void processQuery(SList* logs, SLList* query_list) {
-    /*
-    *   Executes the right query on the Taxonomy tree
-    */ 
-
-    if(!strcmp(getAt(query_list, 0), "DisplayActivity")) {
-        DisplayActivity(logs, atoi(getAt(query_list, 1)));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "AddActivity")) {
-        AddActivity(logs, atoi(getAt(query_list, 1)), getAt(query_list, 2));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "DeleteActivity")) {
-        DeleteActivity(logs, atoi(getAt(query_list, 1)));
-    }
-    else 
-    if(!strcmp(getAt(query_list, 0), "DisplayActivitiesBetweenTimes")) {
-        DisplayActivitiesBetweenTimes(logs, atoi(getAt(query_list, 1)), atoi(getAt(query_list, 2)));
-    }
-    else
-    if(!strcmp(getAt(query_list, 0), "DisplayActivitiesFromStartTime")) {
-        DisplayActivitiesFromStartTime(logs, atoi(getAt(query_list, 1)));
-    }
-    else
-    if(!strcmp(getAt(query_list, 0), "DisplayActivitiesToEndTime")) {
-        DisplayActivitiesToEndTime(logs, atoi(getAt(query_list, 1)));
-    }
-    else
-    if(!strcmp(getAt(query_list, 0), "DisplayAllActivities")) {
-        DisplayAllActivities(logs);
-    }
-     else
-    if(!strcmp(getAt(query_list, 0), "PrintSkipList")) {
-        PrintSkipList(logs);
-    }
+    if(!strcmp(getAt(query_list, 0), "DisplayActivity")) DisplayActivity(logs, atoi(getAt(query_list, 1)));
+    else if(!strcmp(getAt(query_list, 0), "AddActivity")) AddActivity(logs, atoi(getAt(query_list, 1)), getAt(query_list, 2));
+    else if(!strcmp(getAt(query_list, 0), "DeleteActivity")) DeleteActivity(logs, atoi(getAt(query_list, 1)));
+    else if(!strcmp(getAt(query_list, 0), "DisplayActivitiesBetweenTimes")) DisplayActivitiesBetweenTimes(logs, atoi(getAt(query_list, 1)), atoi(getAt(query_list, 2)));
+    else if(!strcmp(getAt(query_list, 0), "DisplayActivitiesFromStartTime")) DisplayActivitiesFromStartTime(logs, atoi(getAt(query_list, 1)));
+    else if(!strcmp(getAt(query_list, 0), "DisplayActivitiesToEndTime")) DisplayActivitiesToEndTime(logs, atoi(getAt(query_list, 1)));
+    else if(!strcmp(getAt(query_list, 0), "DisplayAllActivities")) DisplayAllActivities(logs);
+    else if(!strcmp(getAt(query_list, 0), "PrintSkipList")) PrintSkipList(logs);
     else printf("Invalid command!\n");
-
-    // destroyList(query_list);
+    destroyList(query_list);
 }
 
 #endif // QUERY_H

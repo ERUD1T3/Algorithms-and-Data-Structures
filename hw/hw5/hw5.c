@@ -1,21 +1,18 @@
-/*
-
+/************************************************************
   Author: Josias Moukpe 
   Email: jmoukpe2016@my.fit.edu
   Course: cse2010
   Section: 14b
   Description: skiplist to log and manage user activities
-
-
- */
+ ************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "sllist.h"
-#include "skipList.h"
-#include "query.h"
+#include "sllist.h" // used for parseWords()
+#include "skipList.h" // skip list implementation
+#include "query.h" // processing for the commands in input file
 
 
 int main(int argc, char** argv) {
@@ -30,12 +27,13 @@ int main(int argc, char** argv) {
   // Reading file inputs
   size_t len = 0; // keeps track of the length of the lines
   char* input_line = NULL;  // the input line charracter array  
-  SLList* cmds = NULL;
+  SLList* queries = NULL; 
   SList* logs = initSList();
 
+  // loop while not the end of the input file
   while(getline(&input_line, &len, fp) != EOF) {
-    cmds = parseWords(input_line);
-    processQuery(logs, cmds);
+    queries = parseWords(input_line); // converts input line into sllist of words
+    processQuery(logs, queries); // process the sllist of words in cmds
   }
   
   // destroySList(logs);
