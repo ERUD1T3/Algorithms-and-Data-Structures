@@ -1,6 +1,7 @@
 /*****************************************
  * skipList.h 
  * Interface of skiplist
+ * Josias Moukpe
  ****************************************/
 
 #ifndef SKIPLIST_H
@@ -11,9 +12,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define INF NULL // only infinities have null entries
 #define SIZE 32
-#define MAX_LEVEL 4
 
 typedef unsigned int uint;
 typedef struct entry Entry;
@@ -58,6 +57,8 @@ char* getEvent(SList* skip_list, uint key); // if key exists, return value assoc
 char* putEvent(SList* skip_list, uint key, char* value); // if key doesn’t exist, add entry and return NULL; otherwise, replace value and return the old value
 char* removeEvent(SList* skip_list, uint key); // if key exists, remove entry and return its value; otherwise, return NULL
 int getRandHeight(); //pseudo randomly assign level for insertion
+
+
 
 /***********************************************
  * METHODS IMPLEMENTATION
@@ -215,7 +216,6 @@ void insertInLevel(SNode* head,  SNode* to_insert) {
 char* putEvent(SList* skip_list, uint key, char* value) {
     
     SNode* target = findEvent(skip_list, key);
-    // Entry* new_entry = ;
 
     if(target == NULL) { // inserting new node
         uint insert_level = getRandHeight(); // implicit conversion from int to unsigned int
@@ -292,13 +292,6 @@ void printList(SList* skip_list) {
 
     for(SNode* level_head = skip_list->ceiling_head; level_head != NULL; level_head = level_head->below) {
         printf("(S%d) ", level_head->level);
-            // if(level_head->next->entry == NULL) {
-            //     printf("Empty\n");
-            //     continue;
-            // }
-            // for(SNode* node = level_head->next; node->entry != NULL; node = node->next) {
-            //     printf("%d:%s ", node->entry->time, node->entry->activity);
-            // }
         displayLevel(level_head, NULL);
         printf("\n");
     }
@@ -346,17 +339,12 @@ SNode* initSNode(Entry* act_log, uint ins_level, SNode* next, SNode* prev, SNode
 
 /* initialize a new list with 0 size and height */
 SList* initSList() { 
-    /*
-    * Starts a skip list with one level with 2 infinity nodes
-    */ 
 
     SList* new_list = (SList*)malloc(sizeof(SList));
     new_list->size = 0;
     new_list->height = 0;
-    // new_list->ceiling_head = NULL;
-    // new_list->ceiling_tail = NULL;
-    new_list->floor_head = initSNode(INF, 0, NULL, NULL, NULL, NULL);   
-    new_list->floor_tail = initSNode(INF, 0, NULL, NULL, NULL, NULL);   
+    new_list->floor_head = initSNode(NULL, 0, NULL, NULL, NULL, NULL);   
+    new_list->floor_tail = initSNode(NULL, 0, NULL, NULL, NULL, NULL);   
     new_list->floor_head->next = new_list->floor_tail;
     new_list->floor_tail->prev = new_list->floor_head;
     new_list->ceiling_head = new_list->floor_head;
@@ -366,11 +354,9 @@ SList* initSList() {
 
 /* return a pseudo random height */
 int getRandHeight() {
-  static int height[] = {0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, // sequence of height
-                         0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0};
-  
+  static int height[] = { 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 
+                            0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
   static int count=0;  // number of times getRandHeight() has been called 
-
   return height[count++ % 31];
 }
 

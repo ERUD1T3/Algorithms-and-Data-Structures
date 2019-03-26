@@ -1,3 +1,10 @@
+/*****************************************
+ * query.h 
+ * Interface for processing commands from input file
+ * Josias Moukpe
+ ****************************************/
+
+
 #ifndef QUERY_H
 #define QUERY_H 
 

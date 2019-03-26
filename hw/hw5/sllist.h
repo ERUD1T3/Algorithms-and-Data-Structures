@@ -1,3 +1,10 @@
+/*****************************************
+ * sllist.h 
+ * Interface of linked list
+ * Josias Moukpe
+ ****************************************/
+
+
 #ifndef SLLIST_H
 #define SLLIST_H
 
