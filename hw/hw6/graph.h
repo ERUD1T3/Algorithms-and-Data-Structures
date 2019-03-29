@@ -13,11 +13,12 @@
 #define GRAPH_H 
 
 typedef unsigned int uint;
-typedef struct gnode GNode; 
+typedef struct vertex Vertex; 
+// typedef struct edge Edge;
 typedef struct graph Graph; 
 
 
-struct gnode 
+struct vertex 
 {
     void* data;
     SLList* adj_node;
@@ -27,7 +28,7 @@ struct graph
 {
     uint size;
     SLList* vertices;
-    // SLList* edges;  
+    SLList* edges;  
 };
 
 
@@ -35,15 +36,33 @@ struct graph
  * PROTOTYPE METHODS
  *******************************/
 
-
-GNode* initGNode(void) {
-    // GNode*
-}
+Vertex* initVertex(void* data);
+Graph* initGraph();
 
 
 
 /********************************
  * METHODS IMPLEMENTATION
  *******************************/ 
+
+
+/* initialize a new graph node with data param and an empty list of adjacent nodes */
+Vertex* initVertex(void* data) {
+    Vertex* new_node = (Vertex*)malloc(sizeof(Vertex));
+    new_node->data = data;
+    new_node->adj_node = initList(); 
+    return new_node;
+}
+
+
+/* initialized a graph with size = 0 and empty list of vertices */
+Graph* initGraph() {
+    Graph* new_graph = (Graph*)malloc(sizeof(Graph));
+    new_graph->size = 0;
+    new_graph->vertices = initList();
+    new_graph->edges = initList();
+    return new_graph;
+}
+
 
 #endif // GRAPH_H

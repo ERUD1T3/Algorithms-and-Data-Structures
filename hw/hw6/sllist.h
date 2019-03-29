@@ -41,6 +41,7 @@ Node* initNode(void* data);
 void destroyNode(Node* to_del); // clear memory of ode
 
 //LIST METHODS
+
 SLList* initList(); // initialize a list of TNodes
 SLList* parseWords(char* line); //parse the input into SLList
 Node* traverse(SLList* List,  uint index);  //return the pointer to the node previous to the node at index 

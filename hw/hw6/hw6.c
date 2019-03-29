@@ -40,7 +40,7 @@ int main(int argc, char** argv)
   char* input_line = NULL;  // the input line charracter array  
   SLList* action = NULL; 
   SLList* friendship = NULL;
-  
+  uint number_of_lines = getline(&input_line, &len, ffriends); // reading the first line 
 
   // loop while not the end of the input file
   while(getline(&input_line, &len, ffriends) != EOF) 
