@@ -2,6 +2,7 @@
     "files.associations": {
         "slinkedlist.h": "c",
         "stdio.h": "c",
-        "sllist.h": "c"
+        "sllist.h": "c",
+        "query.h": "c"
     }
 }
