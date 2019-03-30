@@ -12,15 +12,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "sllist.h"
 #include "graph.h"
+#include "sllist.h"
+
 
 
 /*******************************
  * METHODS PROTOTYPES
  ******************************/
 
-void processQuery(Graph* , SLList* query_list);
+void buildGraph(Graph* network, SLList* friendships);
+void processQuery(Graph* network, SLList* query_list);
 void AddFriendship(Graph* network, char* user1, char* user2);
 void RemoveFriendship(Graph* network, char* user1, char* user2);
 void WantToBefriend(Graph* network, char* user1, char* user2);
@@ -42,9 +44,27 @@ void RemoveFriendship(Graph* network, char* user, char* target) {
 }
 
 /* use an intermediate friend to create a new friendship */
-void WantToBefriend(Graph* network) {
+void WantToBefriend(Graph* network, char* user1, char* user2) {
     return;
 }
+
+
+/* build a network graph based a friendship pairs */
+void buildGraph(Graph* network, SLList* friendships) {
+
+    char* user1_name = (char*)getAt(friendships, 0);
+    char* user2_name = (char*)getAt(friendships, 1);
+
+    // printf("\n In build garph, usernames: %s and %s", user1_name, user2_name);
+
+    Vertex *user1 = initVertex(user1_name), *user2 = initVertex(user2_name);
+
+    // printf("\n In build garph, vertex usernames: %s and %s", (char*)user1->data, (char*)user2->data);
+    
+    addVertex(network, user1);
+    addVertex(network, user2);
+    addEdge(user1, user2);
+}   
 
 
 /* Executes actions from the actions file */ 

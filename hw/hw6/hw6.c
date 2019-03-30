@@ -14,13 +14,13 @@
 #include <stdbool.h>
 #include "sllist.h"
 #include "graph.h"
-// #include "query.h"
+#include "query.h"
 
 int main(int argc, char** argv) 
 {
 
-  FILE* factions = fopen(argv[1], "r"); // pointer to query files
-  FILE* ffriends = fopen(argv[2], "r"); // pointer data query files
+  FILE* factions = fopen(argv[2], "r"); // pointer to query files
+  FILE* ffriends = fopen(argv[1], "r"); // pointer data query files
 
   
   if(factions == NULL ) 
@@ -40,16 +40,21 @@ int main(int argc, char** argv)
   char* input_line = NULL;  // the input line charracter array  
   SLList* action = NULL; 
   SLList* friendship = NULL;
-  uint number_of_lines = getline(&input_line, &len, ffriends); // reading the first line 
+  uint number_of_users = getline(&input_line, &len, ffriends); // reading the first line 
+  Graph* network = initGraph();
+
 
   // loop while not the end of the input file
   while(getline(&input_line, &len, ffriends) != EOF) 
   {
     friendship = parseWords(input_line); // converts input line into sllist of words
     printlist(friendship);
+    buildGraph(network, friendship);
     printf("\n");
     // processQuery(logs, queries); // process the sllist of words in cmds
   }
+  
+  printf("number of users: %d\n", network->vertices->size);
 
   // loop while not the end of the input file
   while(getline(&input_line, &len, factions) != EOF) 

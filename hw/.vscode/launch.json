@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/hw6/hw6",
-            "args": ["${workspaceFolder}/hw6/hw6in1actions.txt", "${workspaceFolder}/hw6/hw5in1friends.txt"],
+            "args": ["${workspaceFolder}/hw6/hw6in1friends.txt", "${workspaceFolder}/hw6/hw6in1actions.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

@@ -111,11 +111,10 @@ void printlist(SLList* List) {
         return;
     }
 
-    Node* tmp = List->head;
+    
     if(List->size != 0) {
-        while(tmp != NULL) {
+        for(Node* tmp = List->head; tmp != NULL; tmp = tmp->next) {
             printf("%s ", (char*)(tmp->data));
-            tmp = tmp->next;
         }
     }
 }
@@ -244,7 +243,9 @@ SLList* parseWords(char* line) {
     //walk through other tokens 
     while(word_token != NULL) {
         //add new words to end of the list
-        pushback(tmp, word_token); 
+        char* data = (char*)malloc(SIZE*sizeof(char));
+        strcpy(data, word_token);
+        pushback(tmp, data); 
         word_token = strtok(NULL, delim);
     }
     return tmp; //return pointer to list containing commands
