@@ -19,9 +19,9 @@
 int main(int argc, char** argv) 
 {
 
-  FILE* factions = fopen(argv[2], "r"); // pointer to query files
   FILE* ffriends = fopen(argv[1], "r"); // pointer data query files
-
+  FILE* factions = fopen(argv[2], "r"); // pointer to query files
+  
   
   if(factions == NULL ) 
   { // exits with failure if program fails to open data file
@@ -50,11 +50,16 @@ int main(int argc, char** argv)
     friendship = parseWords(input_line); // converts input line into sllist of words
     printlist(friendship);
     buildGraph(network, friendship);
+    // printVertices(network->vertices);
     printf("\n");
     // processQuery(logs, queries); // process the sllist of words in cmds
   }
-  
+
+  // FILE* ffriends = fopen(argv[1], "r"); // pointer data query files
+
   printf("number of users: %d\n", network->vertices->size);
+  printVertices(network->vertices);
+  printf("\n\n");
 
   // loop while not the end of the input file
   while(getline(&input_line, &len, factions) != EOF) 

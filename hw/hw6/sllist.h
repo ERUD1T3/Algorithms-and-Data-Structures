@@ -47,6 +47,7 @@ SLList* parseWords(char* line); //parse the input into SLList
 Node* traverse(SLList* List,  uint index);  //return the pointer to the node previous to the node at index 
 void destroyList(SLList* to_del); //clear memory of Taxonomic node
 void insert(SLList* List, uint index, void* data); //_insert a node with payload data at position index
+void insort(SLList* List, void* data); //_insert a node with payload data at position index
 void pushfront(SLList* List, void* data); //_insert node at the front of the list
 void pushback(SLList* List, void* data); //_insert node at the end of the list
 void printlist(SLList* List); //print all elements in the list
@@ -153,6 +154,29 @@ void insert(SLList* List,  uint index, void* data) {
     } 
     else { //case 3: Non empty list with _insert at middle
         Node* prev = traverse(List, index);
+        new_node->next = prev->next;
+        prev->next = new_node;
+    }
+
+    ++List->size;
+}
+
+
+
+/* insert a node with data at index */
+void insort(SLList* List,  void* data) {
+    Node* new_node = initNode(data);
+    if(List->size == 0) { //case 1: empty list
+        List->head = new_node;
+        new_node->next = NULL;
+    } 
+    else if(strcmp((char*)List->head->data, data) > 0) { // inserting before the head
+        new_node->next = List->head;
+        List->head = new_node;
+    }   
+    else { // case 3: insert sort
+        Node* prev = NULL;
+        for(prev = List->head; strcmp((char*)prev->next->data, data) < 0; prev = prev->next);
         new_node->next = prev->next;
         prev->next = new_node;
     }

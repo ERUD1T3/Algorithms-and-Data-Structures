@@ -35,7 +35,9 @@ void WantToBefriend(Graph* network, char* user1, char* user2);
 
 /* adds edge between two user vertices */
 void AddFriendship(Graph* network, char* user1, char* user2){
-    return;
+    Vertex* user1_vertex = searchUser(network, user1);
+    Vertex* user2_vertex = searchUser(network, user2);
+    addEdge(user1_vertex, user2_vertex);
 }
 
 /* remove edge between two user vertices */
