@@ -48,10 +48,9 @@ int main(int argc, char** argv)
   while(getline(&input_line, &len, ffriends) != EOF) 
   {
     friendship = parseWords(input_line); // converts input line into sllist of words
-    printlist(friendship);
+    // printlist(friendship);
     buildGraph(network, friendship);
     // printVertices(network->vertices);
-    printf("\n");
     // processQuery(logs, queries); // process the sllist of words in cmds
   }
 
@@ -65,12 +64,11 @@ int main(int argc, char** argv)
   while(getline(&input_line, &len, factions) != EOF) 
   {
     action = parseWords(input_line); // converts input line into sllist of words
-    printlist(action);
-    printf("\n");
-    // processQuery(logs, queries); // process the sllist of words in cmds
+    // printlist(action);
+    processQuery(network, action); // process the sllist of words in cmds
   }
   
-  // destroySList(logs);
+  // destroyGraph();
   fclose(factions);
   fclose(ffriends);
   return EXIT_SUCCESS;

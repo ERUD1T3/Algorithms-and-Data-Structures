@@ -35,18 +35,26 @@ void WantToBefriend(Graph* network, char* user1, char* user2);
 
 /* adds edge between two user vertices */
 void AddFriendship(Graph* network, char* user1, char* user2){
-    Vertex* user1_vertex = searchUser(network, user1);
-    Vertex* user2_vertex = searchUser(network, user2);
+    printf("AddFriendship %s %s ", user1, user2);
+    Vertex* user1_vertex = searchUser(network->vertices, user1);
+    Vertex* user2_vertex = searchUser(network->vertices, user2);
     addEdge(user1_vertex, user2_vertex);
+    printf("\n");
 }
 
 /* remove edge between two user vertices */
 void RemoveFriendship(Graph* network, char* user, char* target) {
+    printf("RemoveFriendship %s %s ", user, target);
+    printf("not implemented yet");
+    printf("\n");
     return;
 }
 
 /* use an intermediate friend to create a new friendship */
 void WantToBefriend(Graph* network, char* user1, char* user2) {
+    printf("WantToBefriend %s %s ", user1, user2);
+    printf("not implemented yet");
+    printf("\n");
     return;
 }
 
@@ -57,11 +65,7 @@ void buildGraph(Graph* network, SLList* friendships) {
     char* user1_name = (char*)getAt(friendships, 0);
     char* user2_name = (char*)getAt(friendships, 1);
 
-    // printf("\n In build garph, usernames: %s and %s", user1_name, user2_name);
-
     Vertex *user1 = initVertex(user1_name), *user2 = initVertex(user2_name);
-
-    // printf("\n In build garph, vertex usernames: %s and %s", (char*)user1->data, (char*)user2->data);
     
     addVertex(network, user1);
     addVertex(network, user2);
