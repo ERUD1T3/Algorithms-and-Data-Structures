@@ -58,6 +58,14 @@ int main(int argc, char** argv)
 
   printf("number of users: %d\n", network->vertices->size);
   printVertices(network->vertices);
+  printf("\n");
+  
+  for(Node* start = network->vertices->head; start != NULL; start = start->next) {
+    Vertex* user = (Vertex*)start->data;
+    printf("%s adj: ", (char*)user->data);
+    printVertices(user->adj_nodes);
+    printf("\n");
+  }
   printf("\n\n");
 
   // loop while not the end of the input file
@@ -68,6 +76,13 @@ int main(int argc, char** argv)
     processQuery(network, action); // process the sllist of words in cmds
   }
   
+  for(Node* start = network->vertices->head; start != NULL; start = start->next) {
+    Vertex* user = (Vertex*)start->data;
+    printf("%s adj: ", (char*)user->data);
+    printVertices(user->adj_nodes);
+    printf("\n");
+  }
+
   // destroyGraph();
   fclose(factions);
   fclose(ffriends);

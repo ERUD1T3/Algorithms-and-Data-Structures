@@ -45,7 +45,11 @@ void AddFriendship(Graph* network, char* user1, char* user2){
 /* remove edge between two user vertices */
 void RemoveFriendship(Graph* network, char* user, char* target) {
     printf("RemoveFriendship %s %s ", user, target);
-    printf("not implemented yet");
+    // printf("not implemented yet");
+    Vertex* user_vertex = searchUser(network->vertices, user);
+    Vertex* target_vertex = searchUser(network->vertices, target);
+
+    removeEdge(user_vertex, target_vertex);
     printf("\n");
     return;
 }
@@ -65,11 +69,32 @@ void buildGraph(Graph* network, SLList* friendships) {
     char* user1_name = (char*)getAt(friendships, 0);
     char* user2_name = (char*)getAt(friendships, 1);
 
-    Vertex *user1 = initVertex(user1_name), *user2 = initVertex(user2_name);
     
-    addVertex(network, user1);
-    addVertex(network, user2);
+    Vertex *user1 = NULL, *user2 = NULL;
+    if(searchUser(network->vertices, user1_name) == NULL) {
+        user1 = initVertex(user1_name);
+        addVertex(network, user1);
+    } else {
+        user1 = searchUser(network->vertices, user1_name);
+    }
+    if(searchUser(network->vertices, user2_name) == NULL) {
+        user2 = initVertex(user2_name);
+        addVertex(network, user2);
+    } 
+    else {
+        user2 = searchUser(network->vertices, user2_name);
+    }
+
     addEdge(user1, user2);
+
+    // printf("%s adj: ", (char*)user1->data);
+    // printVertices(user1->adj_nodes);
+    // printf("\n");
+
+    // printf("%s adj: ", (char*)user2->data);
+    // printVertices(user2->adj_nodes);
+    // printf("\n");
+
 }   
 
 

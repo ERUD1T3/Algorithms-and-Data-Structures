@@ -22,7 +22,7 @@ typedef struct graph Graph;
 struct vertex 
 {
     void* data;
-    SLList* adj_node;
+    SLList* adj_nodes;
 };
 
 struct graph
@@ -44,11 +44,14 @@ void removeVertex(Graph* graph, Vertex* vertex);
 void addEdge(Vertex* vertex1, Vertex* vertex2);
 void removeEdge(Vertex* vertex1, Vertex* vertex2);
 Vertex* searchUser(SLList* userlist, char* name); // TODO: improve using binary search
+void deleteAdj(SLList* adjlist, char* name); // TODO: improve using binary search
 void printVertices(SLList* vertices);
 SLList* pathBFS(Graph* graph, Vertex* source, Vertex* destination);
 void insortVertex(SLList* List,  void* data);
 bool isAdjacent(Vertex* src, Vertex* target);
 void destroyGraph();
+
+
 
 /********************************
  * METHODS IMPLEMENTATION
@@ -78,19 +81,57 @@ void insortVertex(SLList* List,  void* data) {
     ++List->size;
 }
 
-/* removes edge between two vertices */
-void removeEdge(Vertex* vertex1, Vertex* vertex2) {
-    if(!isAdjacent(vertex1, vertex2) && !isAdjacent(vertex2, vertex1)) 
-    {
-        printf("NoF riendshipError");
+
+/* return the node previous to the found node */
+void deleteAdj(SLList* adjlist, char* name) {
+    // printf("name is delete is %s", name);
+    if(adjlist->size == 0) {
+        printf("empty list");
         return;
     }
+    Node* to_del = NULL, *prev = NULL;
+    char* to_comp = (char*)((Vertex*)adjlist->head->data)->data;
+    if(!strcmp(to_comp, name)) {
+        // printf("name is %s, to_comp is %s", name, to_comp);
+        to_del = adjlist->head;
+        adjlist->head = to_del->next;
+        free(to_del);
+        return;
+    }
+    for(Node* curr = adjlist->head; curr->next != NULL; curr = curr->next) {
+        char* to_comp = (char*)((Vertex*)curr->next->data)->data;
+        // printf("\nname: %s vs to_comp: %s", name, to_comp);
+        if(!strcmp(to_comp, name)) {
+            prev = curr;
+            to_del = curr->next;
+            break;
+        }
+    }
+
+    prev->next = to_del->next;
+    free(to_del);
+}
+
+
+
+
+
+/* removes edge between two vertices */
+void removeEdge(Vertex* vertex1, Vertex* vertex2) {
+    if(!isAdjacent(vertex1, vertex2) || !isAdjacent(vertex2, vertex1)) 
+    {
+        printf("No FriendshipError");
+        return;
+    }
+
+    deleteAdj(vertex1->adj_nodes, (char*)vertex2->data);
+    deleteAdj(vertex2->adj_nodes, (char*)vertex1->data);
     
 }
 
 /* returns true if target is adjacent to source */
 bool isAdjacent(Vertex* src, Vertex* target) {
-    for(Node* curr = src->adj_node->head; curr != NULL; curr = curr->next) {
+    for(Node* curr = src->adj_nodes->head; curr != NULL; curr = curr->next) {
         char* to_comp = (char*)((Vertex*)curr->data)->data;
         // printf("\nname: %s vs to_comp: %s", name, to_comp);
         if(!strcmp(to_comp, (char*)target->data)) return true;
@@ -124,7 +165,7 @@ Vertex* searchUser(SLList* userlist, char* name) {
 Vertex* initVertex(void* data) {
     Vertex* new_node = (Vertex*)malloc(sizeof(Vertex));
     new_node->data = data;
-    new_node->adj_node = initList(); 
+    new_node->adj_nodes = initList(); 
     return new_node;
 }
 
@@ -145,20 +186,20 @@ void addEdge(Vertex* vertex1, Vertex* vertex2) {
         printf("ExistingFriendshipError");
         return;
     }
-    insortVertex(vertex1->adj_node, vertex2);
-    insortVertex(vertex2->adj_node, vertex1);
+    insortVertex(vertex2->adj_nodes, vertex1);
+    insortVertex(vertex1->adj_nodes, vertex2);
 }
 
 
 /* add a new vertex to the graph */
 void addVertex(Graph* graph, Vertex* vertex) {
-    char* name_to_search = (char*)vertex->data;
+    //char* name_to_search = (char*)vertex->data;
     // printf("\nname to search is: %s", name_to_search)
-    if(searchUser(graph->vertices, name_to_search) == NULL) {
+    //if(searchUser(graph->vertices, name_to_search) == NULL) {
         insortVertex(graph->vertices, vertex);
         // printf("|vertices| = %d", graph->vertices->size);
         // ++graph->size;
-    }
+    //}
 }
 
 /* print vertices in a graph */
