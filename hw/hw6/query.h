@@ -57,9 +57,26 @@ void RemoveFriendship(Graph* network, char* user, char* target) {
 /* use an intermediate friend to create a new friendship */
 void WantToBefriend(Graph* network, char* user1, char* user2) {
     printf("WantToBefriend %s %s ", user1, user2);
-    printf("not implemented yet");
+    // printf("not implemented yet");
+    Vertex* user1_vertex = searchUser(network->vertices, user1);
+    Vertex* user2_vertex = searchUser(network->vertices, user2);
+
+    if(isAdjacent(user1_vertex, user2_vertex)) {
+        printf("AlreadyAFriendError");
+        return;
+    }
+
+    // SLList* stack = initList();
+    SLList* path = shortestPath(network, user1_vertex, user2_vertex);
+    
+    // printVertices(path);
+    if(path != NULL) {
+        printf("\n- Length of shortest path: %d\n", path->size - 1);
+        printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
+        printf("- Path: "); printlist(path);
+    }
+    else printf("- Sorry, none of your friends can help introduce you to target.");
     printf("\n");
-    return;
 }
 
 

@@ -11,8 +11,6 @@
 #include <stdbool.h>
 #include "sllist.h"
 
-
-
 typedef unsigned int uint;
 typedef struct vertex Vertex; 
 // typedef struct edge Edge;
@@ -21,8 +19,10 @@ typedef struct graph Graph;
 
 struct vertex 
 {
+    bool is_visited;
     void* data;
     SLList* adj_nodes;
+    Vertex* prev; // previous vertex in BFS
 };
 
 struct graph
@@ -46,10 +46,11 @@ void removeEdge(Vertex* vertex1, Vertex* vertex2);
 Vertex* searchUser(SLList* userlist, char* name); // TODO: improve using binary search
 void deleteAdj(SLList* adjlist, char* name); // TODO: improve using binary search
 void printVertices(SLList* vertices);
-SLList* pathBFS(Graph* graph, Vertex* source, Vertex* destination);
+// SLList* pathDFS(Graph* graph, Vertex* source, Vertex* destination, SLList* stack);
 void insortVertex(SLList* List,  void* data);
 bool isAdjacent(Vertex* src, Vertex* target);
 void destroyGraph();
+SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest);
 
 
 
@@ -165,6 +166,7 @@ Vertex* searchUser(SLList* userlist, char* name) {
 Vertex* initVertex(void* data) {
     Vertex* new_node = (Vertex*)malloc(sizeof(Vertex));
     new_node->data = data;
+    new_node->is_visited = false;
     new_node->adj_nodes = initList(); 
     return new_node;
 }
@@ -205,7 +207,7 @@ void addVertex(Graph* graph, Vertex* vertex) {
 /* print vertices in a graph */
 void printVertices(SLList* vertices) {
     if(vertices == NULL || vertices->size == 0 ) {
-        printf("empty list\n");
+        printf("empty list");
         return;
     }
 
@@ -217,6 +219,46 @@ void printVertices(SLList* vertices) {
         }
     }
     // printf("/end\n");
+}
+
+// SLList* pathDFS(Graph* graph, Vertex* src, Vertex* dest, SLList* stack) {
+//     src->is_visited = true;
+//     pushfront(stack, src);
+
+//     if(!strcmp((char*)src->data, (char*)dest->data)) {
+//         return stack;
+//     }
+
+//     SLList* path = NULL;
+//     SLList* neighbors = src->adj_nodes;
+//     for(Node* curr = neighbors->head; curr != NULL; curr = curr->next) {
+//         Vertex* adj = (Vertex*)curr->data;
+//         if(!(adj->is_visited)) {
+//             path = pathDFS(graph, adj, dest, stack);
+//             if(path != NULL) return path;
+//         }
+
+       
+
+//     }
+//     popfront(stack);
+//     return NULL;
+// }
+
+
+SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
+    Vertex* curr = NULL;
+    SLList* queue = initList();
+    SLList* path = initList();
+    
+    pushback(queue, src);
+    while(queue->size != 0) {
+        curr = (Vertex*)popfront(queue);
+        if(!(curr->is_visited)) {
+
+        }
+    }
+    return path;
 }
 
 #endif // GRAPH_H

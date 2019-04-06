@@ -60,13 +60,13 @@ int main(int argc, char** argv)
   printVertices(network->vertices);
   printf("\n");
   
-  for(Node* start = network->vertices->head; start != NULL; start = start->next) {
-    Vertex* user = (Vertex*)start->data;
-    printf("%s adj: ", (char*)user->data);
-    printVertices(user->adj_nodes);
-    printf("\n");
-  }
-  printf("\n\n");
+  // for(Node* start = network->vertices->head; start != NULL; start = start->next) {
+  //   Vertex* user = (Vertex*)start->data;
+  //   printf("%s adj: ", (char*)user->data);
+  //   printVertices(user->adj_nodes);
+  //   printf("\n");
+  // }
+  printf("\n");
 
   // loop while not the end of the input file
   while(getline(&input_line, &len, factions) != EOF) 
@@ -76,12 +76,12 @@ int main(int argc, char** argv)
     processQuery(network, action); // process the sllist of words in cmds
   }
   
-  for(Node* start = network->vertices->head; start != NULL; start = start->next) {
-    Vertex* user = (Vertex*)start->data;
-    printf("%s adj: ", (char*)user->data);
-    printVertices(user->adj_nodes);
-    printf("\n");
-  }
+  // for(Node* start = network->vertices->head; start != NULL; start = start->next) {
+  //   Vertex* user = (Vertex*)start->data;
+  //   printf("%s adj: ", (char*)user->data);
+  //   printVertices(user->adj_nodes);
+  //   printf("\n");
+  // }
 
   // destroyGraph();
   fclose(factions);
