@@ -75,7 +75,7 @@ void WantToBefriend(Graph* network, char* user1, char* user2) {
         printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
         printf("- Path: "); printlist(path);
     }
-    else printf("- Sorry, none of your friends can help introduce you to target.");
+    else printf("- Sorry, none of your friends can help introduce you to %s.", user2);
     printf("\n");
 }
 

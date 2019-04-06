@@ -5,6 +5,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H 
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -168,6 +169,7 @@ Vertex* initVertex(void* data) {
     new_node->data = data;
     new_node->is_visited = false;
     new_node->adj_nodes = initList(); 
+    new_node->prev = NULL;
     return new_node;
 }
 
@@ -249,13 +251,29 @@ void printVertices(SLList* vertices) {
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
     Vertex* curr = NULL;
     SLList* queue = initList();
-    SLList* path = initList();
+    SLList* path = NULL; 
+    // Vertex* prev = 
     
     pushback(queue, src);
     while(queue->size != 0) {
         curr = (Vertex*)popfront(queue);
         if(!(curr->is_visited)) {
-
+            if(!strcmp((char*)curr->data, (char*)dest->data)) {
+                path = initList();
+                for(Vertex* tmp = curr; tmp != NULL; tmp = tmp->prev) {
+                    pushfront(path, tmp->data);
+                }
+                return path;
+            }
+            curr->is_visited = true;
+            SLList* neighbors = curr->adj_nodes;
+            for(Node* neigh = neighbors->head; neigh!= NULL; neigh = neigh->next) {
+                Vertex* adj = (Vertex*)neigh->data;
+                if(!(adj->is_visited)) {
+                    adj->prev = curr;
+                    pushback(queue, adj);
+                }
+            }
         }
     }
     return path;
