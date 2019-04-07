@@ -30,8 +30,8 @@ struct edge
 struct vertex 
 {
     bool is_visited;
-    // void* data;
-    char* data;
+    void* data;
+    // char* data;
     SLList* adj_nodes;
     Vertex* par; // previous vertex in BFS
 };
@@ -62,13 +62,24 @@ bool isAdjacent(Vertex* src, Vertex* target);
 void destroyGraph();
 void setAllVerticesToUnvisited(Graph* graph);
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest);
+SLList* shortestPaths(Graph* graph, Vertex* src, Vertex* dest);
+
 SLList* shortestWeightedPath(Graph* wgraph, Vertex* src, Vertex* dest);
-
-
+Edge* initEdge(Graph* graph, Vertex* v1, Vertex* v2, uint weight); // initialize edge and add it to graph
+uint weight(Graph* graph, Vertex* v1, Vertex* v2);
 
 /********************************
  * METHODS IMPLEMENTATION
  *******************************/ 
+ 
+/* initialize edge and add it to graph */
+Edge* initEdge(Graph* graph, Vertex* v1, Vertex* v2, uint weight) {
+    // Edge* new_edge = 
+}
+
+
+
+
 
 /* insert a node with data at index */
 void insortVertex(SLList* List,  void* data) {
@@ -188,7 +199,7 @@ Graph* initGraph() {
     Graph* new_graph = (Graph*)malloc(sizeof(Graph));
     // new_graph->size = 0;
     new_graph->vertices = initList();
-    // new_graph->edges = initList();
+    new_graph->edges = initList();
     return new_graph;
 }
 
@@ -256,6 +267,40 @@ SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
         }
     }
     return path;
+}
+
+
+/* return a pointer to the shortest path */
+SLList* shortestPaths(Graph* graph, Vertex* src, Vertex* dest) {
+    Vertex* curr = NULL;
+    SLList* queue = initList();
+    SLList* path = NULL, *paths = initList(); 
+
+    
+    setAllVerticesToUnvisited(graph);
+    src->par = NULL;
+    pushback(queue, src);
+    while(queue->size != 0) {
+        curr = (Vertex*)popfront(queue);
+        if(!(curr->is_visited)) {
+            curr->is_visited = true;
+            SLList* neighbors = curr->adj_nodes;
+            for(Node* neigh = neighbors->head; neigh!= NULL; neigh = neigh->next) {
+                Vertex* adj = (Vertex*)neigh->data;
+                if(!(adj->is_visited)) {
+                    adj->par = curr;
+                    if(!strcmp((char*)adj->data, (char*)dest->data)) {
+                        path = initList();
+                        for(Vertex* tmp = adj; tmp != NULL; tmp = tmp->par) pushfront(path, tmp->data);
+                        // return path;
+                        pushback(paths, path);
+                    }
+                    pushback(queue, adj);
+                }
+            }
+        }
+    }
+    return ((paths->size == 0)?NULL:paths);
 }
 
 

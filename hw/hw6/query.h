@@ -66,15 +66,26 @@ void WantToBefriend(Graph* network, char* user1, char* user2) {
         return;
     }
 
-    // SLList* stack = initList();
-    SLList* path = shortestPath(network, user1_vertex, user2_vertex);
+    SLList* paths = shortestPaths(network, user1_vertex, user2_vertex);
+    SLList* path; // = shortestPath(network, user1_vertex, user2_vertex);
     
     // printVertices(path);
-    if(path != NULL) {
-        printf("\n- Length of shortest path: %d\n", path->size - 1);
-        printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
-        printf("- Path: "); printlist(path);
+    if(paths != NULL) {
+        printf("\n- Length of shortest path: %d", ((SLList*)paths->head->data)->size - 1);
+        for(Node* p = paths->head; p != NULL; p = p->next) {
+            path = (SLList*)p->data;
+            printf("\n- Your %s friend is %s.", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
+            printf("\n- Path: "); printlist(path);
+            // printf("\n");
+        }
     }
+
+    // if(path != NULL) {
+    //     printf("\n- Length of shortest path: %d\n", path->size - 1);
+    //     printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
+    //     printf("- Path: "); printlist(path);
+    // }
+
     else printf("- Sorry, none of your friends can help introduce you to %s.", user2);
     printf("\n");
 }
