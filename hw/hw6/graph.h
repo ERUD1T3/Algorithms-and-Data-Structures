@@ -14,23 +14,33 @@
 
 typedef unsigned int uint;
 typedef struct vertex Vertex; 
-// typedef struct edge Edge;
+typedef struct edge Edge;
 typedef struct graph Graph; 
+
+
+struct edge
+{
+    uint weight;
+    Vertex* left;
+    Vertex* right;
+};
+
 
 
 struct vertex 
 {
     bool is_visited;
     void* data;
+    // char* data;
     SLList* adj_nodes;
-    Vertex* prev; // previous vertex in BFS
+    Vertex* par; // previous vertex in BFS
 };
 
 struct graph
 {
     // uint size;
     SLList* vertices;
-    // SLList* edges;  
+    SLList* edges;  
 };
 
 
@@ -47,11 +57,12 @@ void removeEdge(Vertex* vertex1, Vertex* vertex2);
 Vertex* searchUser(SLList* userlist, char* name); // TODO: improve using binary search
 void deleteAdj(SLList* adjlist, char* name); // TODO: improve using binary search
 void printVertices(SLList* vertices);
-// SLList* pathDFS(Graph* graph, Vertex* source, Vertex* destination, SLList* stack);
 void insortVertex(SLList* List,  void* data);
 bool isAdjacent(Vertex* src, Vertex* target);
 void destroyGraph();
+void setAllVerticesToUnvisited(Graph* graph);
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest);
+SLList* shortestWeightedPath(Graph* wgraph, Vertex* src, Vertex* dest);
 
 
 
@@ -169,7 +180,7 @@ Vertex* initVertex(void* data) {
     new_node->data = data;
     new_node->is_visited = false;
     new_node->adj_nodes = initList(); 
-    new_node->prev = NULL;
+    new_node->par = NULL;
     return new_node;
 }
 
@@ -197,13 +208,7 @@ void addEdge(Vertex* vertex1, Vertex* vertex2) {
 
 /* add a new vertex to the graph */
 void addVertex(Graph* graph, Vertex* vertex) {
-    //char* name_to_search = (char*)vertex->data;
-    // printf("\nname to search is: %s", name_to_search)
-    //if(searchUser(graph->vertices, name_to_search) == NULL) {
-        insortVertex(graph->vertices, vertex);
-        // printf("|vertices| = %d", graph->vertices->size);
-        // ++graph->size;
-    //}
+    insortVertex(graph->vertices, vertex);
 }
 
 /* print vertices in a graph */
@@ -223,54 +228,37 @@ void printVertices(SLList* vertices) {
     // printf("/end\n");
 }
 
-// SLList* pathDFS(Graph* graph, Vertex* src, Vertex* dest, SLList* stack) {
-//     src->is_visited = true;
-//     pushfront(stack, src);
-
-//     if(!strcmp((char*)src->data, (char*)dest->data)) {
-//         return stack;
-//     }
-
-//     SLList* path = NULL;
-//     SLList* neighbors = src->adj_nodes;
-//     for(Node* curr = neighbors->head; curr != NULL; curr = curr->next) {
-//         Vertex* adj = (Vertex*)curr->data;
-//         if(!(adj->is_visited)) {
-//             path = pathDFS(graph, adj, dest, stack);
-//             if(path != NULL) return path;
-//         }
-
-       
-
-//     }
-//     popfront(stack);
-//     return NULL;
-// }
-
-
+/* return a pointer to the shortest path */
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
-    Vertex* curr = NULL;
+    Vertex* curr = NULL, *prev = NULL;
     SLList* queue = initList();
     SLList* path = NULL; 
-    // Vertex* prev = 
+
     
+    setAllVerticesToUnvisited(graph);
+    src->par = NULL;
     pushback(queue, src);
     while(queue->size != 0) {
+
         curr = (Vertex*)popfront(queue);
+
         if(!(curr->is_visited)) {
+            curr->is_visited = true;
             if(!strcmp((char*)curr->data, (char*)dest->data)) {
                 path = initList();
-                for(Vertex* tmp = curr; tmp != NULL; tmp = tmp->prev) {
+                for(Vertex* tmp = curr; tmp != NULL; tmp = tmp->par) {
                     pushfront(path, tmp->data);
+                    // printf("not finding the root\n");
                 }
                 return path;
             }
-            curr->is_visited = true;
             SLList* neighbors = curr->adj_nodes;
             for(Node* neigh = neighbors->head; neigh!= NULL; neigh = neigh->next) {
                 Vertex* adj = (Vertex*)neigh->data;
                 if(!(adj->is_visited)) {
-                    adj->prev = curr;
+                    adj->par = curr;
+                    // curr->par = prev;
+                    // prev = curr;
                     pushback(queue, adj);
                 }
             }
@@ -279,4 +267,11 @@ SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
     return path;
 }
 
+
+/* set all the vertices in the graph to unvisited */
+void setAllVerticesToUnvisited(Graph* graph) {
+    for(Node* tmp = graph->vertices->head; tmp != NULL; tmp = tmp->next) {
+            ((Vertex*)tmp->data)->is_visited = false;
+    }
+}
 #endif // GRAPH_H

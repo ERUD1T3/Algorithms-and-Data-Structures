@@ -103,15 +103,6 @@ void buildGraph(Graph* network, SLList* friendships) {
     }
 
     addEdge(user1, user2);
-
-    // printf("%s adj: ", (char*)user1->data);
-    // printVertices(user1->adj_nodes);
-    // printf("\n");
-
-    // printf("%s adj: ", (char*)user2->data);
-    // printVertices(user2->adj_nodes);
-    // printf("\n");
-
 }   
 
 
