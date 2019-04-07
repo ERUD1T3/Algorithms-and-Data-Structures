@@ -73,13 +73,25 @@ uint weight(Graph* graph, Vertex* v1, Vertex* v2);
  *******************************/ 
  
 /* initialize edge and add it to graph */
-Edge* initEdge(Graph* graph, Vertex* v1, Vertex* v2, uint weight) {
-    // Edge* new_edge = 
+Edge* initEdge(Graph* graph, Vertex* left, Vertex* right, uint weight) {
+    Edge* new_edge = (Edge*)malloc(sizeof(Edge));
+    new_edge->left = left;
+    new_edge->right = right;
+    new_edge->weight = weight;
+    pushback(graph->edges, new_edge);
+    return new_edge;
 }
 
-
-
-
+uint weight(Graph* graph, Vertex* v1, Vertex* v2) {
+    for(Node* e = graph->edges->head; e != NULL; e = e->next) {
+        Edge* edge = (Edge*)e->data;
+        if((edge->left == v1 && edge->right == v2) || 
+        (edge->left == v2 && edge->right == v1)) {
+            return edge->weight;
+        }
+    }
+    return 0;
+}
 
 /* insert a node with data at index */
 void insortVertex(SLList* List,  void* data) {
@@ -135,9 +147,6 @@ void deleteAdj(SLList* adjlist, char* name) {
     prev->next = to_del->next;
     free(to_del);
 }
-
-
-
 
 
 /* removes edge between two vertices */
@@ -311,5 +320,9 @@ void setAllVerticesToUnvisited(Graph* graph) {
     }
 }
 
-
+/* finds shortest path in a weighted graph using djikstra alg */
+SLList* shortestWeightedPath(Graph* wgraph, Vertex* src, Vertex* dest) {
+    // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    
+}
 #endif // GRAPH_H
