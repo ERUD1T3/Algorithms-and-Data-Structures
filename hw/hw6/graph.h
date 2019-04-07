@@ -30,8 +30,8 @@ struct edge
 struct vertex 
 {
     bool is_visited;
-    void* data;
-    // char* data;
+    // void* data;
+    char* data;
     SLList* adj_nodes;
     Vertex* par; // previous vertex in BFS
 };
@@ -163,10 +163,8 @@ void destroyGraph() {
 
 /* searches the graph for a user and return the pointer of its vertex if found and NULL otherwise */
 Vertex* searchUser(SLList* userlist, char* name) {
-    // if(graph->size == 0) return NULL;
     for(Node* curr = userlist->head; curr != NULL; curr = curr->next) {
         char* to_comp = (char*)((Vertex*)curr->data)->data;
-        // printf("\nname: %s vs to_comp: %s", name, to_comp);
         if(!strcmp(to_comp, name)) return (Vertex*)curr->data;
           
     }
@@ -230,7 +228,7 @@ void printVertices(SLList* vertices) {
 
 /* return a pointer to the shortest path */
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
-    Vertex* curr = NULL, *prev = NULL;
+    Vertex* curr = NULL;
     SLList* queue = initList();
     SLList* path = NULL; 
 
@@ -239,26 +237,19 @@ SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
     src->par = NULL;
     pushback(queue, src);
     while(queue->size != 0) {
-
         curr = (Vertex*)popfront(queue);
-
         if(!(curr->is_visited)) {
             curr->is_visited = true;
-            if(!strcmp((char*)curr->data, (char*)dest->data)) {
-                path = initList();
-                for(Vertex* tmp = curr; tmp != NULL; tmp = tmp->par) {
-                    pushfront(path, tmp->data);
-                    // printf("not finding the root\n");
-                }
-                return path;
-            }
             SLList* neighbors = curr->adj_nodes;
             for(Node* neigh = neighbors->head; neigh!= NULL; neigh = neigh->next) {
                 Vertex* adj = (Vertex*)neigh->data;
                 if(!(adj->is_visited)) {
                     adj->par = curr;
-                    // curr->par = prev;
-                    // prev = curr;
+                    if(!strcmp((char*)adj->data, (char*)dest->data)) {
+                        path = initList();
+                        for(Vertex* tmp = adj; tmp != NULL; tmp = tmp->par) pushfront(path, tmp->data);
+                        return path;
+                    }
                     pushback(queue, adj);
                 }
             }
@@ -274,4 +265,6 @@ void setAllVerticesToUnvisited(Graph* graph) {
             ((Vertex*)tmp->data)->is_visited = false;
     }
 }
+
+
 #endif // GRAPH_H
