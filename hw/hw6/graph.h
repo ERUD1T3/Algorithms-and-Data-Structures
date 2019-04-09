@@ -64,6 +64,7 @@ void setAllVerticesToUnvisited(Graph* graph);
 SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest);
 SLList* shortestPaths(Graph* graph, Vertex* src, Vertex* dest);
 
+SLList* shortestWeightedPaths(Graph* wgraph, Vertex* src, Vertex* dest);
 SLList* shortestWeightedPath(Graph* wgraph, Vertex* src, Vertex* dest);
 Edge* initEdge(Graph* graph, Vertex* v1, Vertex* v2, uint weight); // initialize edge and add it to graph
 uint weight(Graph* graph, Vertex* v1, Vertex* v2);
@@ -236,14 +237,12 @@ void printVertices(SLList* vertices) {
         return;
     }
 
-    // printf("\nbegin/");
     if(vertices->size != 0) {
         for(Node* tmp = vertices->head; tmp != NULL; tmp = tmp->next) {
             char* to_print = (char*)((Vertex*)tmp->data)->data;
             printf("%s ", to_print);
         }
     }
-    // printf("/end\n");
 }
 
 /* return a pointer to the shortest path */
@@ -279,7 +278,7 @@ SLList* shortestPath(Graph* graph, Vertex* src, Vertex* dest) {
 }
 
 
-/* return a pointer to the shortest path */
+/* return a pointer to the list of shortest paths */
 SLList* shortestPaths(Graph* graph, Vertex* src, Vertex* dest) {
     Vertex* curr = NULL;
     SLList* queue = initList();
@@ -322,7 +321,11 @@ void setAllVerticesToUnvisited(Graph* graph) {
 
 /* finds shortest path in a weighted graph using djikstra alg */
 SLList* shortestWeightedPath(Graph* wgraph, Vertex* src, Vertex* dest) {
-    // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-    
+    // 
+}
+
+/* finds shortest paths (if multiple paths are available) in a weighted graph using djikstra alg */
+SLList* shortestWeightedPaths(Graph* wgraph, Vertex* src, Vertex* dest) {
+    // 
 }
 #endif // GRAPH_H

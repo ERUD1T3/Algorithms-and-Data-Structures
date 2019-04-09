@@ -45,7 +45,6 @@ void AddFriendship(Graph* network, char* user1, char* user2){
 /* remove edge between two user vertices */
 void RemoveFriendship(Graph* network, char* user, char* target) {
     printf("RemoveFriendship %s %s ", user, target);
-    // printf("not implemented yet");
     Vertex* user_vertex = searchUser(network->vertices, user);
     Vertex* target_vertex = searchUser(network->vertices, target);
 
@@ -57,7 +56,6 @@ void RemoveFriendship(Graph* network, char* user, char* target) {
 /* use an intermediate friend to create a new friendship */
 void WantToBefriend(Graph* network, char* user1, char* user2) {
     printf("WantToBefriend %s %s ", user1, user2);
-    // printf("not implemented yet");
     Vertex* user1_vertex = searchUser(network->vertices, user1);
     Vertex* user2_vertex = searchUser(network->vertices, user2);
 
@@ -66,10 +64,12 @@ void WantToBefriend(Graph* network, char* user1, char* user2) {
         return;
     }
 
-    SLList* paths = shortestPaths(network, user1_vertex, user2_vertex);
-    SLList* path; // = shortestPath(network, user1_vertex, user2_vertex);
+   
     
-    // printVertices(path);
+    
+    #ifdef HW6EC1
+    SLList* paths = shortestPaths(network, user1_vertex, user2_vertex);
+    SLList* path;
     if(paths != NULL) {
         printf("\n- Length of shortest path: %d", ((SLList*)paths->head->data)->size - 1);
         for(Node* p = paths->head; p != NULL; p = p->next) {
@@ -79,12 +79,16 @@ void WantToBefriend(Graph* network, char* user1, char* user2) {
             // printf("\n");
         }
     }
+    #endif
 
-    // if(path != NULL) {
-    //     printf("\n- Length of shortest path: %d\n", path->size - 1);
-    //     printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
-    //     printf("- Path: "); printlist(path);
-    // }
+    #ifdef HW6
+    SLList* path = shortestPath(network, user1_vertex, user2_vertex);
+    if(path != NULL) {
+        printf("\n- Length of shortest path: %d\n", path->size - 1);
+        printf("- Your %s friend is %s.\n", ((path->size == 3)?"mutual":"intermediate"),(char*)getAt(path, 1));
+        printf("- Path: "); printlist(path);
+    }
+    #endif
 
     else printf("- Sorry, none of your friends can help introduce you to %s.", user2);
     printf("\n");
